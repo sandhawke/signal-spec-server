@@ -1,0 +1,24 @@
+{
+  "name": "signal-spec-server",
+  "version": "2.0.0",
+  "description": "Web server providing dynamic view of Credibility Signals spec",
+  "main": "server.js",
+  "scripts": {
+    "test": "standard && tap --cov test/test*.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/sandhawke/signal-spec-server.git"
+  },
+  "author": "Sandro Hawke (http://hawke.org/sandro)",
+  "license": "UNLICENSED",
+  "bugs": {
+    "url": "https://github.com/sandhawke/signal-spec-server/issues"
+  },
+  "homepage": "https://github.com/sandhawke/signal-spec-server#readme",
+  "dependencies": {
+    "escape-html-template-tag": "^1.1.0",
+    "express": "^4.16.4",
+    "morgan": "^1.9.1"
+  }
+}
