@@ -1,13 +1,18 @@
 const H = require('escape-html-template-tag')
 const convert = require('gdoc2respec')
-const debug = require('debug')('signal-spec-server')
+const studiesTable = require('./studies')
+const usedIn = require('./used-in')
+const fs = require('fs').promises
+const debug = require('debug')('gendoc')
 
 const config = require('./config')
+const signals = {}
 
 module.exports = (async () => {
   // config.filter = filter
   config.sectionFilter = sectionFilter
   const text = await convert(config)
+  await fs.writeFile('out-signals.json', JSON.stringify(signals, null, 2), 'utf8')
   return text
 })
 
@@ -28,9 +33,19 @@ function sectionFilter (lines) {
     name = m[1]
   }
   m = title.match(/\s*Signal: (.*)/)
+  let signal
+  // debug('01 name=%j signal=%j', name, signal)
   if (m) {
     type = 'signal'
     name = m[1]
+    // debug('05 name=%j signal=%j', name, signal)
+    if (signals[name]) {
+      console.err('duplicated signal name', name)
+    }
+    signals[name] = {name: name}
+    signal = signals[name]
+    signal.names = [name]
+    // debug('10 name=%j signal=%j', name, signal)
     // lines.splice(2, 0, '<span id=' + name + '></span>')  // or maybe change line 1
   }
   
@@ -39,16 +54,27 @@ function sectionFilter (lines) {
     // console.error('line = %j',  line)
     m = line.match(/^\s*<p>(Also called|Issue|Includes):\s*(.*)<\/p>/i)
     if (m) {
-      const op = m[1].toLowerCase()
-      const arg = m[2]
-      if (type === 'signal') {
-        console.error('SIGNAL OP %j %j %j', name, op, arg)
+      const op = m[1].toLowerCase().trim()
+      const arg = m[2].trim()
+      if (signal) {
+        debug('signal %j, op=%j arg=%j', name, op, arg)
+        if (op === 'also called') {
+          signal.aliases = arg.split(/\s*,\s*/)
+          signal.names = signal.names.concat(signal.aliases)
+        } else {
+          console.warn('unknown op', op)
+        }
+        debug(' signal now %j', signal)
       }
     }
   }
-  if (type === 'signal') {
-    lines.push(`[Data about signal ${name} will be inserted here]`)
+  if (signal) {
+    // lines.push(`[Data about signal ${name} will be inserted here]`)
+    debug('calling studies with name=%j signal=%j', name, signal)
+    lines.push(...studiesTable(name, signal.names))
+    lines.push(...usedIn(name, signal.names))
   }
+  
   return lines
 }
 

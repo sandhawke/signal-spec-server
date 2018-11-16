@@ -37,6 +37,8 @@ config.extraHead = `
     padding: 0.3em;
   }
 </style>
+<link href="https://unpkg.com/tabulator-tables@4.1.2/dist/css/tabulator.min.css" rel="stylesheet">
+<script type="text/javascript" src="https://unpkg.com/tabulator-tables@4.1.2/dist/js/tabulator.min.js"></script>
 `
 
 config.abstractHTML = 'This document specifies various types of information, called credibility signals, which are considered potentially useful in assessing credibility of online information.'

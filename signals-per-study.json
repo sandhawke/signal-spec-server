@@ -1,0 +1,282 @@
+[
+  {
+    "seq": "3",
+    "signal": "Title Representativeness",
+    "study": "Zhang18",
+    "irr": "0.367",
+    "rel expts": "0.234",
+    "p<": "",
+    "number of observers": "3",
+    "number of observations per observer": "50"
+  },
+  {
+    "seq": "10",
+    "signal": "“Clickbait” Title",
+    "study": "Zhang18",
+    "irr": "0.581",
+    "rel expts": "-0.709",
+    "p<": "0.001",
+    "number of observers": "3",
+    "number of observations per observer": "50"
+  },
+  {
+    "seq": "14",
+    "signal": "Quotes from Outside Experts",
+    "study": "Zhang18",
+    "irr": "0.673",
+    "rel expts": "0.327",
+    "p<": "",
+    "number of observers": "3",
+    "number of observations per observer": "50"
+  },
+  {
+    "seq": "15",
+    "signal": "Citation of Organizations",
+    "study": "Zhang18",
+    "irr": "0.283",
+    "rel expts": "0.145",
+    "p<": "",
+    "number of observers": "3",
+    "number of observations per observer": "50"
+  },
+  {
+    "seq": "16",
+    "signal": "Citatation of Studies",
+    "study": "Zhang18",
+    "irr": "0.763",
+    "rel expts": "0.107",
+    "p<": "",
+    "number of observers": "3",
+    "number of observations per observer": "50"
+  },
+  {
+    "seq": "17",
+    "signal": "Single Study Article",
+    "study": "Zhang18",
+    "irr": "0.877",
+    "rel expts": "0.031",
+    "p<": "",
+    "number of observers": "3",
+    "number of observations per observer": "50"
+  },
+  {
+    "seq": "18",
+    "signal": "Confidence - Extent Claims Justified",
+    "study": "Zhang18",
+    "irr": "-0.093",
+    "rel expts": "0.690",
+    "p<": "0.001",
+    "number of observers": "3",
+    "number of observations per observer": "50"
+  },
+  {
+    "seq": "19",
+    "signal": "Confidence - Acknowledge Uncertainty",
+    "study": "Zhang18",
+    "irr": "0.534",
+    "rel expts": "-0.247",
+    "p<": "",
+    "number of observers": "3",
+    "number of observations per observer": "50"
+  },
+  {
+    "seq": "20",
+    "signal": "Logical Fallacies - Straw Man",
+    "study": "Zhang18",
+    "irr": "-0.096",
+    "rel expts": "-0.402",
+    "p<": "0.050",
+    "number of observers": "3",
+    "number of observations per observer": "50"
+  },
+  {
+    "seq": "21",
+    "signal": "Logical Fallacies - False Dilemma",
+    "study": "Zhang18",
+    "irr": "0.102",
+    "rel expts": "-0.303",
+    "p<": "",
+    "number of observers": "3",
+    "number of observations per observer": "50"
+  },
+  {
+    "seq": "22",
+    "signal": "Logical Fallacies - Slippery Slope",
+    "study": "Zhang18",
+    "irr": "0.478",
+    "rel expts": "0.374",
+    "p<": "0.050",
+    "number of observers": "3",
+    "number of observations per observer": "50"
+  },
+  {
+    "seq": "23",
+    "signal": "Logical Fallacies - Appeal to Fear",
+    "study": "Zhang18",
+    "irr": "0.314",
+    "rel expts": "-0.424",
+    "p<": "0.050",
+    "number of observers": "3",
+    "number of observations per observer": "50"
+  },
+  {
+    "seq": "24",
+    "signal": "Logical Fallacies - Naturalistic",
+    "study": "Zhang18",
+    "irr": "0.377",
+    "rel expts": "-0.533",
+    "p<": "0.010",
+    "number of observers": "3",
+    "number of observations per observer": "50"
+  },
+  {
+    "seq": "25",
+    "signal": "Tone - Emotionally Charged",
+    "study": "Zhang18",
+    "irr": "0.098",
+    "rel expts": "0.611",
+    "p<": "0.001",
+    "number of observers": "3",
+    "number of observations per observer": "50"
+  },
+  {
+    "seq": "26",
+    "signal": "Tone - Exaggerated Claims",
+    "study": "Zhang18",
+    "irr": "0.235",
+    "rel expts": "0.606",
+    "p<": "0.001",
+    "number of observers": "3",
+    "number of observations per observer": "50"
+  },
+  {
+    "seq": "27",
+    "signal": "Inference - Type of Claims",
+    "study": "Zhang18",
+    "irr": "0.154",
+    "rel expts": "0.029",
+    "p<": "",
+    "number of observers": "3",
+    "number of observations per observer": "50"
+  },
+  {
+    "seq": "28",
+    "signal": "Inference - Convincing Evidence",
+    "study": "Zhang18",
+    "irr": "0.540",
+    "rel expts": "0.764",
+    "p<": "0.001",
+    "number of observers": "3",
+    "number of observations per observer": "50"
+  },
+  {
+    "seq": "29",
+    "signal": "Originality",
+    "study": "Zhang18",
+    "irr": "0.346",
+    "rel expts": "",
+    "p<": "",
+    "number of observers": "3",
+    "number of observations per observer": "50"
+  },
+  {
+    "seq": "30",
+    "signal": "Fact-checked",
+    "study": "Zhang18",
+    "irr": "0.303",
+    "rel expts": "",
+    "p<": "0.050",
+    "number of observers": "3",
+    "number of observations per observer": "50"
+  },
+  {
+    "seq": "31",
+    "signal": "Representative Citations",
+    "study": "Zhang18",
+    "irr": "0.312",
+    "rel expts": "",
+    "p<": "0.001",
+    "number of observers": "3",
+    "number of observations per observer": "50"
+  },
+  {
+    "seq": "32",
+    "signal": "Reputation of Citations",
+    "study": "Zhang18",
+    "irr": "0.852",
+    "rel expts": "",
+    "p<": "",
+    "number of observers": "3",
+    "number of observations per observer": "50"
+  },
+  {
+    "seq": "33",
+    "signal": "Number of Ads",
+    "study": "Zhang18",
+    "irr": "0.535",
+    "rel expts": "",
+    "p<": "",
+    "number of observers": "3",
+    "number of observations per observer": "50"
+  },
+  {
+    "seq": "34",
+    "signal": "Number of Content Recommendation",
+    "study": "Zhang18",
+    "irr": "-0.088",
+    "rel expts": "",
+    "p<": "",
+    "number of observers": "3",
+    "number of observations per observer": "50"
+  },
+  {
+    "seq": "35",
+    "signal": "Number of Sponsored Content",
+    "study": "Zhang18",
+    "irr": "0.422",
+    "rel expts": "",
+    "p<": "",
+    "number of observers": "3",
+    "number of observations per observer": "50"
+  },
+  {
+    "seq": "36",
+    "signal": "Number of Social Calls",
+    "study": "Zhang18",
+    "irr": "0.564",
+    "rel expts": "",
+    "p<": "",
+    "number of observers": "3",
+    "number of observations per observer": "50"
+  },
+  {
+    "seq": "37",
+    "signal": "Number of Mailing List or Email Calls",
+    "study": "Zhang18",
+    "irr": "0.375",
+    "rel expts": "",
+    "p<": "0.010",
+    "number of observers": "3",
+    "number of observations per observer": "50"
+  },
+  {
+    "seq": "38",
+    "signal": "“Spammy” Ads",
+    "study": "Zhang18",
+    "irr": "0.554",
+    "rel expts": "",
+    "p<": "",
+    "number of observers": "3",
+    "number of observations per observer": "50"
+  },
+  {
+    "seq": "39",
+    "signal": "Placement of Ads and Social Calls",
+    "study": "Zhang18",
+    "irr": "0.326",
+    "rel expts": "",
+    "p<": "0.050",
+    "number of observers": "3",
+    "number of observations per observer": "50"
+  }
+]

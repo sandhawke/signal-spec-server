@@ -1,0 +1,29 @@
+﻿seq,signal,study,irr,rel expts,p<,number of observers,number of observations per observer
+3,Title Representativeness,Zhang18,0.367,0.234,,3,50
+10,“Clickbait” Title,Zhang18,0.581,-0.709,0.001,3,50
+14,Quotes from Outside Experts,Zhang18,0.673,0.327,,3,50
+15,Citation of Organizations,Zhang18,0.283,0.145,,3,50
+16,Citatation of Studies,Zhang18,0.763,0.107,,3,50
+17,Single Study Article,Zhang18,0.877,0.031,,3,50
+18,Confidence - Extent Claims Justified,Zhang18,-0.093,0.690,0.001,3,50
+19,Confidence - Acknowledge Uncertainty,Zhang18,0.534,-0.247,,3,50
+20,Logical Fallacies - Straw Man,Zhang18,-0.096,-0.402,0.050,3,50
+21,Logical Fallacies - False Dilemma,Zhang18,0.102,-0.303,,3,50
+22,Logical Fallacies - Slippery Slope,Zhang18,0.478,0.374,0.050,3,50
+23,Logical Fallacies - Appeal to Fear,Zhang18,0.314,-0.424,0.050,3,50
+24,Logical Fallacies - Naturalistic,Zhang18,0.377,-0.533,0.010,3,50
+25,Tone - Emotionally Charged,Zhang18,0.098,0.611,0.001,3,50
+26,Tone - Exaggerated Claims,Zhang18,0.235,0.606,0.001,3,50
+27,Inference - Type of Claims,Zhang18,0.154,0.029,,3,50
+28,Inference - Convincing Evidence,Zhang18,0.540,0.764,0.001,3,50
+29,Originality,Zhang18,0.346,,,3,50
+30,Fact-checked,Zhang18,0.303,,0.050,3,50
+31,Representative Citations,Zhang18,0.312,,0.001,3,50
+32,Reputation of Citations,Zhang18,0.852,,,3,50
+33,Number of Ads,Zhang18,0.535,,,3,50
+34,Number of Content Recommendation,Zhang18,-0.088,,,3,50
+35,Number of Sponsored Content,Zhang18,0.422,,,3,50
+36,Number of Social Calls,Zhang18,0.564,,,3,50
+37,Number of Mailing List or Email Calls,Zhang18,0.375,,0.010,3,50
+38,“Spammy” Ads,Zhang18,0.554,,,3,50
+39,Placement of Ads and Social Calls,Zhang18,0.326,,0.050,3,50
