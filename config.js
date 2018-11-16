@@ -1,5 +1,5 @@
 const config = {
-  useFile: 'cached.html',
+  useFile: process.env.USEFILE, // 'cached.html',
   gdocID: process.env.GDOCID || '16xLtANKeVp6FVi_zU8JaCLiHImR_kq1K2B2ebwMP2k0',
   // gdocID: process.env.GDOCID || '1IzC6HrYaO3XNHAtXHsviZLEumhJDPl_S1--w_IYa68s',
   respec: {
