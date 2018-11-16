@@ -3,6 +3,7 @@
   "version": "2.0.0",
   "description": "Web server providing dynamic view of Credibility Signals spec",
   "main": "server.js",
+  "bin": "start-server.js"
   "scripts": {
     "test": "standard && tap --cov test/test*.js"
   },
