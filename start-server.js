@@ -1,3 +1,5 @@
+#!/usr/bin/env node   
+
 const AppMgr = require('./appmgr')
 
 const m = new AppMgr()
