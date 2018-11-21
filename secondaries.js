@@ -9,20 +9,19 @@ const section = require('./section') // use a sectionMgr instead?
   signals[name] = { name, body, defs: [ {key,text,by} ] }
 */
   
-module.exports = async function secondaries (config, signals) {
+module.exports = async function secondaries (config, sman) {
 
-  // later get this from config, etc
-  const url = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTIzdqEXc2XmYgjqbzHuklxRbqxFXfjuxazSdMZhkFIAJ1GhO1BU3g4ALoOe6HO_riVcDpT8hEhvU5w/pub?output=csv'
-
-  const response = await got(url)
-  const records = csvparse(response.body, {
-    columns: false })  
-  console.log('Got records %j', records)
-  for (const r of records.slice(1)) {
-    const name = r[0]
-    const defs = [ {text: r[1]} ]
-    const source = url
-    const s = section.signal({name, defs, source})
+  for (const url of config.secondaries || []) {
+    const response = await got(url)
+    const records = csvparse(response.body, {
+      columns: false })  
+    console.log('Got records %j', records)
+    for (const r of records.slice(1)) {
+      const name = r[0]
+      const defs = [ {text: r[1]} ]
+      const source = url
+      sman.obtain({name, defs, source})
+    }
   }
 }
 

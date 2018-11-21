@@ -8,21 +8,22 @@ const debug = require('debug')('gendoc')
 
 const section = require('./section')
 const config = require('./config')
-const signals = {}
+const sman = new section.Manager(config)
 
 module.exports = (async () => {
-  await secondaries(config, signals)
+  await secondaries(config, sman)
   await datasets.load()
   config.sectionFilter = sectionFilter
   const text = await convert(config)
-  await fs.writeFile('out-signals.json', JSON.stringify(signals, null, 2), 'utf8')
+  await fs.writeFile('out-signals.json', sman.toString(), 'utf8')
   return text
 })
 
 function sectionFilter (lines) {
   const out = []
-  const s = section.parseLines(lines, signals)
+  const s = sman.parseLines(lines)
 
+  /*
   // NO it's the same signal if ANY OF THE NAMES LINE UP.
   //
   // MAYBE.  How do we merge the discussions???
@@ -37,6 +38,7 @@ function sectionFilter (lines) {
     }
     signals[s.name ] = s
   }
+  */
   
   out.push('<section>')
   const spans = []
@@ -46,7 +48,7 @@ function sectionFilter (lines) {
   }
   if (!s.hLevel) throw Error('no hLevel WTF ' + JSON.stringify(s))
   if (!s.title) throw Error('no title WTF ' + JSON.stringify(s))
-  out.push(`<h${s.hLevel} id="${s.id}">${spans}${s.title}</h${s.hLevel}>`)
+  out.push(`<h${s.hLevel} id="${s.id}">${spans.join('')}${s.title}</h${s.hLevel}>`)
   out.push('')
 
   // make a link to our relevant source doc
@@ -56,16 +58,20 @@ function sectionFilter (lines) {
   // ISSUE: pencil glyph is fairly rare, often renders as unknown-unicode
   out.push('<div><a class="edit" href="' + edurl + '">🖉</a></div>')
 
+  let defsDone = false
   for (const part of s.parts) {
     if (part.isStudiesTable) {
       out.push(...studiesTable('all'))
     } else if (part.isDefs) {
       out.push(...defsTable(s))
+      defsDone = true
     } else {
       if (!part.text) throw Error('part with no text: ' + JSON.stringify(part))
       out.push(part.text)
     }
   }
+  // sometimes the defs only come from secondary sources
+  if (!defsDone) out.push(...defsTable(s))
   
   if (s.isSignal) {
     // lines.push(`[Data about signal ${name} will be inserted here]`)
@@ -80,7 +86,7 @@ function sectionFilter (lines) {
 function defsTable (s) {
   // use s.defs {key, text, by} from section.parseTable() and other places
   const out = []
-  if (s.defs.length) {
+  if (s.defs && s.defs.length) {
     out.push('<table>')
     out.push('  <thead>')
     out.push('    <tr>')
@@ -91,10 +97,12 @@ function defsTable (s) {
     out.push('  </thead>')
     out.push('  <tbody>')
     for (const def of s.defs) {
+      // link to source?
+      // link to entry?
       out.push('    <tr>')
-      out.push(H`      <td>${def.key}</td>`)
+      out.push(H`      <td>${def.key || ''}</td>`)
       out.push(H`      <td>${def.text}</td>`)
-      out.push(H`      <td>${def.by}</td>`)
+      out.push(H`      <td>${def.by || ''}</td>`)
       out.push('    </tr>')
     }
     out.push('  <tbody>')

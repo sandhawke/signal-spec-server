@@ -6,7 +6,54 @@
 
 const cheerio = require('cheerio')
 const cnamify = require('cnamify')
-const debug = require('debug')('Signal')
+const debug = require('debug')('section')
+
+class Manager {
+  constructor (config) {
+    this.config = config
+    this.byName = {}
+    this.byAnyName = {}  // also index by aliases
+  }
+
+  toString () {
+    return JSON.stringify(this.byName, null, 2)
+  }
+
+  // return new or existing section containing this data
+  obtain (features) {
+    if (features.name) {
+      for (const name of [features.name, ...(features.aliases||[])]) {
+        const existing = this.byAnyName[name]
+        if (existing) {
+          //
+          //  What if it's from the same source document?  Like, the
+          //  same signal name is used twice?  Set multiple ids and
+          //  cross link them???
+          //
+          debug('FOUND EXISTING using name %j, merging into %j', name, existing.name)
+          existing.merge(features)
+          return existing
+        }
+      }
+    }
+    let s
+    if (features.type === 'signal') {
+      s = new Signal(features)
+    }
+    s = new Section(features)
+    this.byName[s.name] = s
+    for (const name of [s.name, ...(s.aliases||[])]) {
+      this.byAnyName[name]  = s
+    }
+    return s
+  }
+
+  parseLines (lines) {
+    return parseLines(lines, this)
+  }
+}
+
+
 
 // tie to signals[] ?
 // how to fill in subSections?
@@ -24,22 +71,49 @@ class Section {
     Object.assign(this, settings)
     if (!this.aliases) this.aliases = []
     if (!this.parts) this.parts = []
+    debug('constructed, aliases', this.aliases)
   }
 
   get otherIds () {
-    return this.aliases.map(cnamify)
+    // weird bug: if I just use this.aliases.map(cnamify) then
+    // this.aliases turns into an associative array.  wtf?  map isnt
+    // supposed to change its argument, is it?
+    const out = this.aliases.map(x => cnamify(x))
+    return out
   }
   
   merge (source) {
     console.error('Merging', source.name, 'into', this.name)
     // Object.assign(this, source) would get lists wrong
     this.aliases.push(source.name)
-    this.aliases.push(source.aliases)
-    const aliases = new Set(this.aliases)
-    aliases.remove(this.name)
-    this.aliases = [...aliases] // remove dups
+    this.aliases.push(...source.aliases)
+    const aliases = new Set(this.aliases)  // remove dups
+    aliases.delete(this.name) // and cross-references
+    this.aliases = [...aliases]
+    debug('MERGED aliases:', this.aliases)
 
-    this.parts.push(source.parts) // annotate different source?
+    if (!this.defs) this.defs = []
+    this.defs.push(...source.defs || []) // annotate different source?
+
+    if (!this.parts) this.parts = []
+    this.parts.push(...source.parts || []) // annotate different source?
+
+    const pick = (prop) => {
+      if (this[prop]) {
+        if (source[prop]) {
+          if (source[prop] !== this[prop]) {
+            console.error('merge conflict on property %s, %j !== %j', prop, source[prop], this[prop]) //, this=%o source=%o', //                           prop, this, source)
+          }
+        }
+      } else {
+        this[prop] = source[prop]
+      }
+    }
+    
+    pick('type')
+    pick('title')
+    pick('id')
+    pick('hLevel')
   }
 }
 
@@ -50,10 +124,6 @@ class Signal extends Section {
   get isSignal () { return true }
 }
 
-module.exports.signal = function signal (settings) {
-  // OR an existing one???
-  return new Signal(settings)
-}
 
 /*
   Given all the HTML lines (nearly put into lines already, thanks),
@@ -61,25 +131,31 @@ module.exports.signal = function signal (settings) {
 
   return a Section or Signal (subclass of Section)
 */
-module.exports.parseLines =  function parseLines (lines, signals) {
-  let type, name, m, line, s
+function parseLines (lines, mgr) {
+  let type, name, m, line
   let lineNumber = -1
 
-  function err () {
-    throw Error(`bad line in section parser, line ${lineNumber}: ${JSON.stringify(lines[lineNumber])}`)
+  function err (msg) {
+    // these should probably become non-fatal, or caught,
+    // turning into some warning at this point in the text
+    throw Error(`${msg}: bad line in section parser, line ${lineNumber}: ${JSON.stringify(lines[lineNumber])}`)
   }
 
   line = lines[++lineNumber]
   m = line.match(/^\s*<section>\s*$/)
-  if (!m) err()
+  if (!m) err('expection section element')
 
   line = lines[++lineNumber]
   m = line.match(/id="(.*?)">(.*?)<\/h/)
-  if (!m) err()
+  if (!m) err('expecting h element with id')
   const id = m[1]
-  const title = m[2]
+  let title = m[2]
+  if (!title) {
+    // err('no title')
+    title = '(Section with no title?)'
+  } 
   m = line.match(/<h(\d)/)
-  if (!m) err()
+  if (!m) err('expecting h element')
   const hLevel = m[1]
 
   /* GENERATE
@@ -91,25 +167,27 @@ module.exports.parseLines =  function parseLines (lines, signals) {
   if (m) {
     type = 'subject'
     name = m[1]
-    s = new Section({id, title, type, name, hLevel})
+    // s = new Section({id, title, type, name, hLevel})
   }
   m = title.match(/\s*Signal: (.*)/)
-  let signal
+  // let signal
   if (m) {
     type = 'signal'
     name = m[1]
-    s = new Signal({id, title, type, name, hLevel})
+    // s = new Signal({id, title, type, name, hLevel})
   }
-  if (!s) {
-    s = new Section({id, title, type: 'other', hLevel})
-  }
+  //if (!s) {
+  // s = new Section({id, title, type: 'other', hLevel})
+  // }
 
   // go through the parts, doing special handling for certain kinds of lines
   
-  s.parts = []
+  const parts = []
+  const aliases = []
+  let defs
   while (true) {
     line = lines[++lineNumber]
-    debug('line %s %o', lineNumber, line)
+    // debug('line %s %o', lineNumber, line)
     if (!line) break
     const part = { text: line }
 
@@ -122,26 +200,22 @@ module.exports.parseLines =  function parseLines (lines, signals) {
       handleOp(op, arg, part)
       
       if (part.aliases) {
-        s.aliases.push(...part.aliases)
-        for (let alias of part.aliases) {
-          const prior = signals[alias]
-          if (prior) {
-            prior.merge(s)
-            s = prior
-          }
-        }
+        aliases.push(...part.aliases)
       }
     } 
-    if (s.isSignal) {
+    if (type === 'signal') {
       m = line.match(/\s*<table>/)
       if (m) {
-        parseTable(line, s)
+        if (defs) err('multiple definition tables')
+        defs = parseDefsTable(line)
         part.isDefs = true
       }
     }
 
-    s.parts.push(part)
+    parts.push(part)
   }
+
+  const s = mgr.obtain({type, title, id, name, aliases, parts, hLevel, defs})
   return s
 }
 
@@ -154,14 +228,15 @@ function handleOp (op, arg, part) {
   }
   if (op === 'also called') {
     part.aliases = arg.split(/\s*,\s*/)
+    debug('found aliases', part)
     return part
   }
   console.warn('unknown op %j %j', op, arg)
   return part
 }
 
-function parseTable (html, signal) {
-  if (!signal.defs) signal.defs = []
+function parseDefsTable (html) {
+  const defs = []
   const $ = cheerio.load(html)
   $('tr').each(function (i, row) {
     // console.log('  ROW for ', i, signal.name)
@@ -174,7 +249,10 @@ function parseTable (html, signal) {
         if (j === 1) def.text = val
         if (j === 2) def.by = val
       })
-      signal.defs.push(def)
+      defs.push(def)
     }
   })
+  return defs
 }
+
+module.exports = {Manager}
