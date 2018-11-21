@@ -34,6 +34,8 @@ module.exports.load = async () => {
   debug('all source datasets loaded')
 }
 
+let count = 1
+
 module.exports.usageReport = (signal) => {
   const out = []
 
@@ -49,21 +51,28 @@ module.exports.usageReport = (signal) => {
     const props = new Set()
     for (const def of signal.defs) {
       debug('looking for ', s.kb.ns.mov.def, def.text)
-      /*
-      // const q = s.kb.getQuads(null, s.kb.ns.mov.def, s.kb.lit(def.text), null)
-      const q = s.kb.getQuads()
-      for (const qq of q) {
-        debug(qq)
-      }
-      
-      if (q.length) debug('GOT SOME:', q)
-      */
       s.kb.forSubjects(subj => {
-        props.add(subj.value)
+        out.push(H`<p>Matched predicate ${subj.value}</p>`)
+        props.add(subj)
       }, s.kb.ns.mov.def, s.kb.lit(def.text))
       if (props.size > 0) {
         debug('DATASET %s has %j', s.name, [...props.values()])
-        out.push(H`<p>Used in source: ${s.name} (def ${def.key}) -- Explorer not available</p>`)
+        const quads = []
+        for (const prop of props.values()) {
+          // how do we gather the nearby stuff...???  what does that mean???
+          out.push(H`<p>Matching predicate ${prop.value}</p>`)
+          const q = s.kb.getQuads(null, prop, null, null)
+          out.push(H`<p>Got quads ${JSON.stringify(q)}</p>`)
+          quads.push(q)
+        }
+        const body = 'using ' + JSON.stringify(props.values) + ' ---- ' + JSON.stringify(quads)
+        const id = 'dataset_' + (count++)
+        out.push(H`<p>Used in source: 
+<span style="display: inline" id="${id}-up" onclick="openup('${id}')">►</span>
+<span style="display: none" id="${id}-down" onclick="closeup('${id}')">▼</span>
+ ${s.name} (def ${def.key})</p>
+<div style="display: none" id="${id}-body">${body}</div>
+`)
       }
     }
   }

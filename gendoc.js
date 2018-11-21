@@ -2,14 +2,16 @@ const H = require('escape-html-template-tag')
 const convert = require('gdoc2respec')
 const studiesTable = require('./studies')
 const datasets = require('./datasets')
+const secondaries = require('./secondaries')
 const fs = require('fs').promises
 const debug = require('debug')('gendoc')
-const cheerio = require('cheerio')
 
+const section = require('./section')
 const config = require('./config')
 const signals = {}
 
 module.exports = (async () => {
+  await secondaries(config, signals)
   await datasets.load()
   config.sectionFilter = sectionFilter
   const text = await convert(config)
@@ -18,97 +20,87 @@ module.exports = (async () => {
 })
 
 function sectionFilter (lines) {
-  let type, name
-  const head = lines[1]   // lines[0] is always "<section>"
-  let m = head.match(/id="(.*?)">(.*?)</)
-  if (!m) throw Error('bad header line: ' + head)
-  const id = m[1]
-  const title = m[2]
+  const out = []
+  const s = section.parseLines(lines, signals)
 
-  const edurl = `https://docs.google.com/document/d/${config.gdocID}/edit#heading=${id}`
-  lines.splice(2, 0, '<div><a class="edit" href="' + edurl + '">🖉</a></div>')
-  
-  m = title.match(/\s*Subject type: (.*)/)
-  if (m) {
-    type = 'subject'
-    name = m[1]
+  // NO it's the same signal if ANY OF THE NAMES LINE UP.
+  //
+  // MAYBE.  How do we merge the discussions???
+  // 
+  if (s.isSignal) {
+    let counter = 1
+    let base = s.name
+    debug('uniquify %s', base)
+    while (signals[s.name]) {
+      s.name = base + ' DUPLICATE #' + counter++
+      debug('dup', s.name)
+    }
+    signals[s.name ] = s
   }
-  m = title.match(/\s*Signal: (.*)/)
-  let signal
-  // debug('01 name=%j signal=%j', name, signal)
-  if (m) {
-    type = 'signal'
-    name = m[1]
-    // debug('05 name=%j signal=%j', name, signal)
-    if (signals[name]) {
-      console.err('duplicated signal name', name)
+  
+  out.push('<section>')
+  const spans = []
+  for (const id of s.otherIds) {
+    // make HTML targets for all our aliases
+    spans.push(`<span id="${id}"></span>`)
+  }
+  if (!s.hLevel) throw Error('no hLevel WTF ' + JSON.stringify(s))
+  if (!s.title) throw Error('no title WTF ' + JSON.stringify(s))
+  out.push(`<h${s.hLevel} id="${s.id}">${spans}${s.title}</h${s.hLevel}>`)
+  out.push('')
+
+  // make a link to our relevant source doc
+  //
+  // what if we have multple source docs, eg for subsection inclusion?
+  const edurl = `https://docs.google.com/document/d/${config.gdocID}/edit#heading=${s.id}`
+  // ISSUE: pencil glyph is fairly rare, often renders as unknown-unicode
+  out.push('<div><a class="edit" href="' + edurl + '">🖉</a></div>')
+
+  for (const part of s.parts) {
+    if (part.isStudiesTable) {
+      out.push(...studiesTable('all'))
+    } else if (part.isDefs) {
+      out.push(...defsTable(s))
     } else {
-      signals[name] = {name: name}
+      if (!part.text) throw Error('part with no text: ' + JSON.stringify(part))
+      out.push(part.text)
     }
-    signal = signals[name]
-    signal.names = [name]
-    // debug('10 name=%j signal=%j', name, signal)
-    // lines.splice(2, 0, '<span id=' + name + '></span>')  // or maybe change line 1
   }
   
-  // debug('=>', id, type, name, title)
-  for (const line of lines.slice(2)) {
-    // debug('line = %j',  line)
-    m = line.match(/^\s*<p>(Also called|Issue|Includes|Special):\s*(.*)<\/p>/i)
-    if (m) {
-      debug('op line = %j, m=%j',  line, m)
-      const op = m[1].toLowerCase().trim()
-      const arg = m[2].trim()
-      handleOp(lines, op, arg, signal)
-    }
-    if (signal) {
-      m = line.match(/\s*<table>/)
-      if (m) {
-        parseTable(line, signal)
-      }
-    }
-  }
-  if (signal) {
+  if (s.isSignal) {
     // lines.push(`[Data about signal ${name} will be inserted here]`)
-    debug('calling studies with name=%j signal=%j', name, signal)
-    lines.push(...studiesTable(name, signal.names))
-    lines.push(...datasets.usageReport(signal))
+    debug('calling studies with name=%j signal=%j', s.name, s)
+    out.push(...studiesTable(s.name, s.aliases))
+    out.push(...datasets.usageReport(s))
   }
   
-  return lines
+  return out
 }
 
-function handleOp (lines, op, arg, signal) {
-  if (op === 'special' && arg === 'studies-table') {
-    lines.push(...studiesTable('all'))
-    return
-  }
-  if (signal) {
-    debug('signal %j, op=%j arg=%j', op, arg)
-    if (op === 'also called') {
-      signal.aliases = arg.split(/\s*,\s*/)
-      signal.names = signal.names.concat(signal.aliases)
-      return
+function defsTable (s) {
+  // use s.defs {key, text, by} from section.parseTable() and other places
+  const out = []
+  if (s.defs.length) {
+    out.push('<table>')
+    out.push('  <thead>')
+    out.push('    <tr>')
+    out.push(H`      <th>Key</th>`)
+    out.push(H`      <th>Definition Text / Template</th>`)
+    out.push(H`      <th>Source Notes</th>`)
+    out.push('    </tr>')
+    out.push('  </thead>')
+    out.push('  <tbody>')
+    for (const def of s.defs) {
+      out.push('    <tr>')
+      out.push(H`      <td>${def.key}</td>`)
+      out.push(H`      <td>${def.text}</td>`)
+      out.push(H`      <td>${def.by}</td>`)
+      out.push('    </tr>')
     }
+    out.push('  <tbody>')
+    out.push('</table>')
+  } else {
+    out.push('<p><i>No definitions found.</i></p>')
   }
-  console.warn('unknown op %j %j signal %j', op, arg, signal)
-}
-
-function parseTable (html, signal) {
-  if (!signal.defs) signal.defs = []
-  const $ = cheerio.load(html)
-  $('tr').each(function (i, row) {
-    // console.log('  ROW for ', i, signal.name)
-    if (i >= 1) { // not for header
-      const def = {}
-      $(this).find('td').each(function (j, td) {
-        // console.log('      TD %d %d  %j', i, j, $(this).text())
-        const val = $(this).text().trim()
-        if (j === 0) def.key = val
-        if (j === 1) def.text = val
-        if (j === 2) def.by = val
-      })
-      signal.defs.push(def)
-    }
-  })
+  return out
 }

@@ -37,6 +37,18 @@ config.extraHead = `
     padding: 0.3em;
   }
 </style>
+<script>
+function openup(i) {
+  document.getElementById(i+'-up').style.display='none';
+  document.getElementById(i+'-down').style.display='inline';
+  document.getElementById(i+'-body').style.display='block';
+}
+function closeup(i) {
+  document.getElementById(i+'-up').style.display='inline';
+  document.getElementById(i+'-down').style.display='none';
+  document.getElementById(i+'-body').style.display='none';
+}
+</script>
 <link href="https://unpkg.com/tabulator-tables@4.1.2/dist/css/tabulator.min.css" rel="stylesheet">
 <script type="text/javascript" src="https://unpkg.com/tabulator-tables@4.1.2/dist/js/tabulator.min.js"></script>
 `
