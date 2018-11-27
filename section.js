@@ -55,7 +55,7 @@ class Manager {
 
 
 
-// tie to signals[] ?
+// iza// tie to signals[] ?
 // how to fill in subSections?
 
 class Section {
