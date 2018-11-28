@@ -1,7 +1,7 @@
 const csvparse = require('csv-parse/lib/sync')
 const H = require('escape-html-template-tag')
 const got = require('got')
-const debug = require('debug')('load')
+const debug = require('debug')('sss-load')
 const kgx = require('kgx')
 
 class Source {
@@ -14,17 +14,17 @@ class Source {
     // return this.url
   }
 
-  get loadedAtString () {
-    debug('loaded at String', this.loadedAt)
-    if (this.loadedAt) {
-      return this.loadedAt.toISOString()
+  get doneAtString () {
+    debug('loaded at String', this.doneAt)
+    if (this.doneAt) {
+      return this.doneAt.toISOString()
     }
     return ''
   }
 
   get loadDuration () {
-    if (this.loadedAt) {
-      return (this.loadedAt - this.loadStarted) / 1000
+    if (this.doneAt) {
+      return (this.doneAt - this.loadStarted) / 1000
     }
     return ''
   }
@@ -42,8 +42,8 @@ class Source {
     debug('loading %j', this)
     this.loadStarted = new Date()
     await this.innerLoad(...args)
-    this.loadedAt = new Date()
-    debug('loaded %j', this)
+    this.doneAt = new Date()
+    debug('loaded %o', this.url)
   }
 }
 
@@ -77,19 +77,33 @@ class GoogleSheetSource extends Source {
      [0,0] === Source Label, Signal Label
 
  */
-  async innerLoad (sman) {
+  async innerLoad (sman, config) {
     const url = `https://docs.google.com/spreadsheets/export?format=csv&id=${this.id}`
     const response = await got(url)
     const records = csvparse(response.body, {
       columns: false // means we go by position instead of column name
     })
     console.log('Got records %j', records)
-    for (const r of records.slice(1)) {
-      const name = r[0]
-      const source = url
-      const by = H`<a href="${this.url}">${r[2]}</a>`
-      const defs = [ { text: r[1], by } ]
-      sman.obtain({ name, defs, source })
+    if (records[0][0] === 'Source URL') {
+      for (const r of records.slice(1)) {
+        if (r[1].match(/yes|try/i)) {
+          const s = addSource(config, r[0])
+          s.note = r[2]
+          debug('added source', s)
+        } else {
+          debug('skipping source, flaged as Use=No', r[0])
+        }
+      }
+    } else if (records[0][0] === 'Signal Label') {
+      for (const r of records.slice(1)) {
+        const name = r[0]
+        const source = url
+        const by = H`<a href="${this.url}">${r[2]}</a>`
+        const defs = [ { text: r[1], by } ]
+        sman.obtain({ name, defs, source })
+      }
+    } else {
+      console.error('dont know how to handle sheet where first cell is ' + JSON.stringify(records[0][0]) + ' with URL ' + url)
     }
     debug('sheets innerLoad done')
   }
@@ -103,47 +117,63 @@ function setupSources (config) {
   if (typeof urls === 'string') urls = urls.split(/\s+/)
   debug('urls = %o', urls)
   for (const url of urls) {
-    let m, source
-    if (url === '') continue
-
-    m = url.match(/^https:\/\/docs.google.com\/document\/d\/([a-zA-Z0-9_-]+)/)
-    if (m) {
-      const id = m[1]
-      source = new GoogleDocSource({ url, id })
-
-      // hack: right now, we only allow one gdoc, and it's understood
-      // as the master doc.   Need to do some re-factoring with gdoc2respec
-      config.gdocID = id
-    }
-
-    m = url.match(/^https:\/\/docs.google.com\/spreadsheets\/d\/([a-zA-Z0-9_-]+)/)
-    if (m) {
-      const id = m[1]
-      source = new GoogleSheetSource({ url, id })
-    }
-
-    // maybe do something with github URLs?  you name the repo, we
-    // look for certain files in it, and automatically use
-    // raw.githubusercontent.com ?
-
-    if (!source) {
-      source = new Source({ url })
-    }
-
-    config.sources.push(source)
   }
 }
 
-async function loadAll (config, sman) {
-  const results = []
-  setupSources(config)
-  for (const source of config.sources) {
-    debug('source %o', source)
-    results.push(source.load(sman))
+function addSource (config, url) {
+  let m, source
+  if (url === '') return undefined
+  
+  m = url.match(/^https:\/\/docs.google.com\/document\/d\/([a-zA-Z0-9_-]+)/)
+  if (m) {
+    const id = m[1]
+    source = new GoogleDocSource({ url, id })
+    
+    // hack: right now, we only allow one gdoc, and it's understood
+    // as the master doc.   Need to do some re-factoring with gdoc2respec
+    config.gdocID = id
   }
-  debug('awaiting Promise.all')
-  await Promise.all(results)
-  debug('it returned')
+
+  m = url.match(/^https:\/\/docs.google.com\/spreadsheets\/d\/([a-zA-Z0-9_-]+)/)
+  if (m) {
+    const id = m[1]
+    source = new GoogleSheetSource({ url, id })
+  }
+  
+  // maybe do something with github URLs?  you name the repo, we
+  // look for certain files in it, and automatically use
+  // raw.githubusercontent.com ?
+  
+  if (!source) {
+    source = new Source({ url })
+  }
+  
+  config.sources.push(source)
+  return source
+}
+
+
+async function loadAll (config, sman) {
+  if (!config.sources) config.sources = []
+  addSource(config, config.sourceList)
+  let doAnotherPass = true
+  
+  while (doAnotherPass) {
+    debug('starting a loadAll pass')
+    const results = []
+    doAnotherPass = false
+    for (const source of config.sources) {
+      if (!source.doneAt) {
+        debug('new source %o', source)
+        // might alter config.sources
+        doAnotherPass = true
+        results.push(source.load(sman, config))
+      }
+    }
+    debug('awaiting Promise.all')
+    await Promise.all(results)
+    debug('it returned')
+  }
 }
 
 module.exports = { loadAll }

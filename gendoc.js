@@ -6,12 +6,11 @@ const fs = require('fs').promises
 const debug = require('debug')('gendoc')
 
 const section = require('./section')
-const configFromFile = require('./config')
 const { loadAll } = require('./load')
 
-async function gendoc (config = configFromFile) {
+async function gendoc (config) {
+  if (!config) throw Error('gendoc missing config')
   const sman = new section.Manager(config)
-  if (process.env.SOURCEURLS) config.sourceURLs = process.env.SOURCEURLS
   await loadAll(config, sman)
   config.sectionFilter = sectionFilter
   const text = await convert(config)
@@ -110,7 +109,7 @@ function defsTable (s) {
     out.push('  <tbody>')
     out.push('</table>')
   } else {
-    out.push('<p><i>No definitions found.</i></p>')
+    // out.push('<p><i>No definitions found.</i></p>')
   }
   return out
 }
@@ -120,12 +119,12 @@ function sourcesTable (sources) {
   const columns = [
     // { title: 'Source URL', field: 'url', formatter: 'link' }, WTF broken
     { title: 'Source URL', field: 'urlAsLink', formatter: 'html' },
-    { title: 'Time Loaded', field: 'loadedAtString' }, // see http://tabulator.info/docs/4.1/format#format-builtin datetime maybe, but it needs moment
-    { title: 'Speed', field: 'loadDuration' }
+    { title: 'Time Loaded', field: 'doneAtString' }, // see http://tabulator.info/docs/4.1/format#format-builtin datetime maybe, but it needs moment
+    // { title: 'Speed', field: 'loadDuration' } hide this until the gdoc2respec refactor fixes its time
   ]
   const id = 'sources-table'
-  const sourceView = sources.map(({url, urlAsLink, loadedAtString, loadDuration}) =>
-                                 ({url, urlAsLink, loadedAtString, loadDuration}))
+  const sourceView = sources.map(({url, urlAsLink, doneAtString, loadDuration}) =>
+                                 ({url, urlAsLink, doneAtString, loadDuration}))
   debug('sourceView %j', sourceView)
   out.push(`
 <div id="${id}"></div>
