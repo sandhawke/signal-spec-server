@@ -79,7 +79,7 @@ class AppMgr {
   }
 
   async load () {
-    const appmgr = this
+    // const appmgr = this
   }
 }
 

@@ -4,5 +4,4 @@
 */
 module.exports = function (lines) {
 
-
 }

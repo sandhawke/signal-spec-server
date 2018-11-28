@@ -1,14 +1,21 @@
 const config = {
+
+  /*
   secondaries: [
     'https://docs.google.com/spreadsheets/d/e/2PACX-1vTIzdqEXc2XmYgjqbzHuklxRbqxFXfjuxazSdMZhkFIAJ1GhO1BU3g4ALoOe6HO_riVcDpT8hEhvU5w/pub?output=csv'
   ],
   useFile: process.env.USEFILE, // 'cached.html',
   gdocID: process.env.GDOCID || '16xLtANKeVp6FVi_zU8JaCLiHImR_kq1K2B2ebwMP2k0',
-  // gdocID: process.env.GDOCID || '1IzC6HrYaO3XNHAtXHsviZLEumhJDPl_S1--w_IYa68s',
+  // gdocID: process.env.GDOCID || '1IzC6HrYaO3XNHAtXHsviZLEumhJDPl_S1--w_IYa68s', */
+  sourceURLs: `
+https://data.credweb.org/static/zhang18
+https://docs.google.com/spreadsheets/d/1AXy5XwU6PuyCjCwFVleuYHUoUV3_d48GPreJ0aPMbyA
+https://docs.google.com/document/d/16xLtANKeVp6FVi_zU8JaCLiHImR_kq1K2B2ebwMP2k0
+  `,
   respec: {
     noRecTrack: true,
     edDraftURI: 'https://credweb.org/signals',
-    specStatus: 'ED',  // need a CG ED
+    specStatus: 'ED', // need a CG ED
     prevED: 'https://credweb.org/signals-20181021',
     editors: [{
       name: 'TBD (initial version by Sandro Hawke)'

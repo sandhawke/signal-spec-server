@@ -1,7 +1,6 @@
 const debug = require('debug')('datasets')
-const cnamify = require('cnamify')
 const H = require('escape-html-template-tag')
-const querystring = require('querystring')
+// const querystring = require('querystring')
 const kgx = require('kgx')
 
 // https://data.credweb.org/zhang18?format=turtle&return=raw
@@ -28,7 +27,7 @@ let loaded = false
 
 module.exports.load = async () => {
   if (loaded) return
-  sources.forEach(s => {s.kb = new kgx.KB()})
+  sources.forEach(s => { s.kb = new kgx.KB() })
   await Promise.all(sources.map(s => s.kb.load(sourceURL(s))))
   loaded = true
   debug('all source datasets loaded')
@@ -43,7 +42,7 @@ module.exports.usageReport = (signal) => {
     out.push('<p>No definitions provided yet.</p>')
     return out
   }
-  
+
   // look through our datasets for any properties matching any of the
   // definitions given of signal.
 
@@ -81,7 +80,7 @@ module.exports.usageReport = (signal) => {
     out.push(H`<p>No available data sources found</p>`)
   }
   return out
-  
+
   /*
   const out = []
   const sources = []

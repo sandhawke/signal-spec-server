@@ -12,7 +12,7 @@ class Manager {
   constructor (config) {
     this.config = config
     this.byName = {}
-    this.byAnyName = {}  // also index by aliases
+    this.byAnyName = {} // also index by aliases
   }
 
   toString () {
@@ -22,7 +22,7 @@ class Manager {
   // return new or existing section containing this data
   obtain (features) {
     if (features.name) {
-      for (const name of [features.name, ...(features.aliases||[])]) {
+      for (const name of [features.name, ...(features.aliases || [])]) {
         const existing = this.byAnyName[name]
         if (existing) {
           //
@@ -42,8 +42,8 @@ class Manager {
     }
     s = new Section(features)
     this.byName[s.name] = s
-    for (const name of [s.name, ...(s.aliases||[])]) {
-      this.byAnyName[name]  = s
+    for (const name of [s.name, ...(s.aliases || [])]) {
+      this.byAnyName[name] = s
     }
     return s
   }
@@ -52,8 +52,6 @@ class Manager {
     return parseLines(lines, this)
   }
 }
-
-
 
 // iza// tie to signals[] ?
 // how to fill in subSections?
@@ -81,13 +79,13 @@ class Section {
     const out = this.aliases.map(x => cnamify(x))
     return out
   }
-  
+
   merge (source) {
     console.error('Merging', source.name, 'into', this.name)
     // Object.assign(this, source) would get lists wrong
     this.aliases.push(source.name)
     this.aliases.push(...source.aliases)
-    const aliases = new Set(this.aliases)  // remove dups
+    const aliases = new Set(this.aliases) // remove dups
     aliases.delete(this.name) // and cross-references
     this.aliases = [...aliases]
     debug('MERGED aliases:', this.aliases)
@@ -109,7 +107,7 @@ class Section {
         this[prop] = source[prop]
       }
     }
-    
+
     pick('type')
     pick('title')
     pick('id')
@@ -118,12 +116,13 @@ class Section {
 }
 
 class Signal extends Section {
+  /*
   constructor (settings) {
     super(settings)
   }
+  */
   get isSignal () { return true }
 }
-
 
 /*
   Given all the HTML lines (nearly put into lines already, thanks),
@@ -153,7 +152,7 @@ function parseLines (lines, mgr) {
   if (!title) {
     // err('no title')
     title = '(Section with no title?)'
-  } 
+  }
   m = line.match(/<h(\d)/)
   if (!m) err('expecting h element')
   const hLevel = m[1]
@@ -162,7 +161,7 @@ function parseLines (lines, mgr) {
      const edurl = `https://docs.google.com/document/d/${config.gdocID}/edit#heading=${id}`
      lines.splice(2, 0, '<div><a class="edit" href="' + edurl + '">🖉</a></div>')
   */
-  
+
   m = title.match(/\s*Subject type: (.*)/)
   if (m) {
     type = 'subject'
@@ -176,12 +175,12 @@ function parseLines (lines, mgr) {
     name = m[1]
     // s = new Signal({id, title, type, name, hLevel})
   }
-  //if (!s) {
+  // if (!s) {
   // s = new Section({id, title, type: 'other', hLevel})
   // }
 
   // go through the parts, doing special handling for certain kinds of lines
-  
+
   const parts = []
   const aliases = []
   let defs
@@ -194,15 +193,17 @@ function parseLines (lines, mgr) {
     // debug('line = %j',  line)
     m = line.match(/^\s*<p>(Also called|Issue|Includes|Special):\s*(.*)<\/p>/i)
     if (m) {
-      debug('op line = %j, m=%j',  line, m)
+      debug('op line = %j, m=%j', line, m)
       const op = m[1].toLowerCase().trim()
       const arg = m[2].trim()
       handleOp(op, arg, part)
-      
+
+      if (part.isEnd) break
+
       if (part.aliases) {
         aliases.push(...part.aliases)
       }
-    } 
+    }
     if (type === 'signal') {
       m = line.match(/\s*<table>/)
       if (m) {
@@ -215,7 +216,7 @@ function parseLines (lines, mgr) {
     parts.push(part)
   }
 
-  const s = mgr.obtain({type, title, id, name, aliases, parts, hLevel, defs})
+  const s = mgr.obtain({ type, title, id, name, aliases, parts, hLevel, defs })
   return s
 }
 
@@ -226,9 +227,21 @@ function handleOp (op, arg, part) {
     part.isStudiesTable = true
     return part
   }
+  if (op === 'special' && arg === 'end-of-content') {
+    part.isEnd = true
+    return part
+  }
+  if (op === 'special' && arg === 'list-of-sources') {
+    part.isListOfSources = true
+    return part
+  }
   if (op === 'also called') {
     part.aliases = arg.split(/\s*,\s*/)
     debug('found aliases', part)
+    return part
+  }
+  if (op === 'issue') {
+    console.warn('We havent implemented linking to github issues yet')
     return part
   }
   console.warn('unknown op %j %j', op, arg)
@@ -255,4 +268,4 @@ function parseDefsTable (html) {
   return defs
 }
 
-module.exports = {Manager}
+module.exports = { Manager }

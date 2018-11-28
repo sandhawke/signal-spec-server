@@ -2,13 +2,13 @@
   "name": "signal-spec-server",
   "version": "2.1.0",
   "description": "Web server providing dynamic view of Credibility Signals spec",
-  "main": "server.js",
+  "main": "index.js",
   "bin": {
     "signal-spec-server": "start-server.js",
     "signal-spec": "cmd.js"
   },
   "scripts": {
-    "test": "standard && tap --cov test/test*.js"
+    "test": "standard && tap --cov test/[a-z]*.js"
   },
   "repository": {
     "type": "git",
