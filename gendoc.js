@@ -57,7 +57,7 @@ async function gendoc (config) {
     // out.push('<div><a class="edit" href="' + edurl + '">🖉</a></div>')
 
     // yes, I paid the $1.99 for no-credit usage
-    out.push('<div><a class="edit" href="' + edurl + '"><img src="/static/noun_External%20Link_1107417g_16x16" width="16" height="16" alt="src"></a></div>')
+    out.push(H`<div><a class="edit" href="${edurl}"><img src="${config.siteurl}/static/noun_External%20Link_1107417g_16x16" width="16" height="16" alt="src"></a></div>`)
 
     let defsDone = false
     for (const part of s.parts) {

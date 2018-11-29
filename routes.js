@@ -32,7 +32,7 @@ router.get('/custom', async (req, res, next) => {
 
 <p>If that works, you can start changing the sources listed in your copy of the spreadsheet and reload your bookmarked custom version.</p>
 
-<form action="/" method="get">
+<form action="${configFromFile.siteurl || req.appmgr.siteurl}" method="get">
 Source List URL: <input size="80" type="text" name="src"></input>
 </form>
 </body></html>
@@ -41,6 +41,11 @@ Source List URL: <input size="80" type="text" name="src"></input>
 
 router.get('/', async (req, res, next) => {
   const config = Object.assign({}, configFromFile)
+
+  // the siteurl probably comes from appmgr which gets it via process.env
+  if (!config.siteurl) {
+    config.siteurl = req.appmgr.siteurl
+  }
 
   if (req.query.src) {
     config.sourceList = req.query.src
