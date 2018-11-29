@@ -28,6 +28,7 @@
     "express": "^4.16.4",
     "gdoc2respec": "0.0.4",
     "got": "^9.3.2",
+    "kgx": "0.0.3",
     "morgan": "^1.9.1",
     "tabulator-tables": "^4.1.2"
   },
