@@ -14,7 +14,6 @@ router.use('/static', express.static('static', {
   }
 }))
 
-
 router.get('/custom', async (req, res, next) => {
   res.send('' + H`<html><head></head></body>
 
@@ -39,7 +38,7 @@ Source List URL: <input size="80" type="text" name="src"></input>
 </body></html>
 `)
 })
-           
+
 router.get('/', async (req, res, next) => {
   const config = Object.assign({}, configFromFile)
 
@@ -50,7 +49,7 @@ router.get('/', async (req, res, next) => {
 
   // needs error handling
   // also, needs to cache result or something!  (but depends on sourceList, etc)
-  
+
   res.send(await gendoc(config))
 })
 

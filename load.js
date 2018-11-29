@@ -30,9 +30,9 @@ class Source {
   }
 
   get title () {
-    return this.url  // for now?
+    return this.url // for now?
   }
-  
+
   async innerLoad (...args) {
     this.kb = new kgx.KB()
     await this.kb.load(this.url)
@@ -69,11 +69,10 @@ class GoogleDocSource extends Source {
 
 class GoogleSheetSource extends Source {
   /* At the moment, this is ONLY for signal definitions.  Should extend
-     to observations and maybe doc structuring, looking at column names. 
+     to observations and maybe doc structuring, looking at column names.
 
      OR it might be a sourceList -- so we need config to add to sources...
 
-     
      [0,0] === Source Label, Signal Label
 
  */
@@ -109,26 +108,15 @@ class GoogleSheetSource extends Source {
   }
 }
 
-function setupSources (config) {
-  if (config.sources) return
-  config.sources = []
-  let urls = config.sourceURLs || ''
-  debug('urls = %o', urls)
-  if (typeof urls === 'string') urls = urls.split(/\s+/)
-  debug('urls = %o', urls)
-  for (const url of urls) {
-  }
-}
-
 function addSource (config, url) {
   let m, source
   if (url === '') return undefined
-  
+
   m = url.match(/^https:\/\/docs.google.com\/document\/d\/([a-zA-Z0-9_-]+)/)
   if (m) {
     const id = m[1]
     source = new GoogleDocSource({ url, id })
-    
+
     // hack: right now, we only allow one gdoc, and it's understood
     // as the master doc.   Need to do some re-factoring with gdoc2respec
     config.gdocID = id
@@ -139,25 +127,24 @@ function addSource (config, url) {
     const id = m[1]
     source = new GoogleSheetSource({ url, id })
   }
-  
+
   // maybe do something with github URLs?  you name the repo, we
   // look for certain files in it, and automatically use
   // raw.githubusercontent.com ?
-  
+
   if (!source) {
     source = new Source({ url })
   }
-  
+
   config.sources.push(source)
   return source
 }
-
 
 async function loadAll (config, sman) {
   if (!config.sources) config.sources = []
   addSource(config, config.sourceList)
   let doAnotherPass = true
-  
+
   while (doAnotherPass) {
     debug('starting a loadAll pass')
     const results = []

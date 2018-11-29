@@ -55,7 +55,7 @@ async function gendoc (config) {
     const edurl = `https://docs.google.com/document/d/${config.gdocID}/edit#heading=${s.id}`
     // ISSUE: pencil glyph is fairly rare, often renders as unknown-unicode
     // out.push('<div><a class="edit" href="' + edurl + '">🖉</a></div>')
-    
+
     // yes, I paid the $1.99 for no-credit usage
     out.push('<div><a class="edit" href="' + edurl + '"><img src="/static/noun_External%20Link_1107417g_16x16" width="16" height="16" alt="src"></a></div>')
 
@@ -122,12 +122,12 @@ function sourcesTable (sources) {
   const columns = [
     // { title: 'Source URL', field: 'url', formatter: 'link' }, WTF broken
     { title: 'Source URL', field: 'urlAsLink', formatter: 'html' },
-    { title: 'Time Loaded', field: 'doneAtString' }, // see http://tabulator.info/docs/4.1/format#format-builtin datetime maybe, but it needs moment
+    { title: 'Time Loaded', field: 'doneAtString' } // see http://tabulator.info/docs/4.1/format#format-builtin datetime maybe, but it needs moment
     // { title: 'Speed', field: 'loadDuration' } hide this until the gdoc2respec refactor fixes its time
   ]
   const id = 'sources-table'
-  const sourceView = sources.map(({url, urlAsLink, doneAtString, loadDuration}) =>
-                                 ({url, urlAsLink, doneAtString, loadDuration}))
+  const sourceView = sources.map(({ url, urlAsLink, doneAtString, loadDuration }) =>
+    ({ url, urlAsLink, doneAtString, loadDuration }))
   debug('sourceView %j', sourceView)
   out.push(`
 <div id="${id}"></div>
@@ -143,7 +143,6 @@ new Tabulator("#${id}", {
 <p>If you want to privately experiment with bookmarkable alternative views generated using a different source list, try <a href="./custom">Custom View of Credibility Signals</a>.</p>
 `)
   return out
-
 }
 
 module.exports = gendoc
