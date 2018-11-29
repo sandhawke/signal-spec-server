@@ -87,6 +87,8 @@ async function gendoc (config) {
   }
 }
 
+// let refseq=1000
+
 function defsTable (s) {
   // use s.defs {key, text, by} from section.parseTable() and other places
   const out = []
@@ -94,19 +96,41 @@ function defsTable (s) {
     out.push('<table>')
     out.push('  <thead>')
     out.push('    <tr>')
-    out.push(H`      <th>Key</th>`)
-    out.push(H`      <th>Definition Text / Template</th>`)
-    out.push(H`      <th>Source Notes</th>`)
+    // out.push(H`      <th>Ref</th>`)
+    out.push(H`      <th>Definition (Template)</th>`)
+    out.push(H`      <th>Tags</th>`)
     out.push('    </tr>')
     out.push('  </thead>')
     out.push('  <tbody>')
+
+    // gather the def.text and tags by name
+    let didStuff = false
+    const tags = {} // tags[deftext][tagname] = [src1link, src2link]
     for (const def of s.defs) {
-      // link to source?
-      // link to entry?
+      if (!tags[def.text]) tags[def.text] = {}
+      for (const tagentry of def.tags || []) {
+        if (!tags[def.text][tagentry.name]) tags[def.text][tagentry.name] = []
+        tags[def.text][tagentry.name].push(tagentry.link)
+        didStuff = true
+      }
+    }
+    if (didStuff) console.log('TAGS', tags)
+
+    for (const text of Object.keys(tags).sort()) {
       out.push('    <tr>')
-      out.push(H`      <td>${def.key || ''}</td>`)
-      out.push(H`      <td>${def.text}</td>`)
-      out.push(H`      <td>${def.by || ''}</td>`)
+      // out.push(H`      <td>${refseq++ /*def.key || ''*/}</td>`)
+      out.push(H`      <td>${text}</td>`)
+      const tt = [] // same as "out", but we join with no space
+      for (const tagname of Object.keys(tags[text]).sort()) {
+        tt.push(H`${tagname}(`)
+        let links = tags[text][tagname]
+        if (links.length > 3) {
+          links = links.slice(0, 3).push('...')
+        }
+        tt.push(links.join(','))
+        tt.push(') ')
+      }
+      out.push(H`      <td>${H.safe(tt.join(''))}</td>`)
       out.push('    </tr>')
     }
     out.push('  <tbody>')
@@ -117,17 +141,18 @@ function defsTable (s) {
   return out
 }
 
+// coordinate with load.js
 function sourcesTable (sources) {
   const out = []
   const columns = [
     // { title: 'Source URL', field: 'url', formatter: 'link' }, WTF broken
-    { title: 'Source URL', field: 'urlAsLink', formatter: 'html' },
-    { title: 'Time Loaded', field: 'doneAtString' } // see http://tabulator.info/docs/4.1/format#format-builtin datetime maybe, but it needs moment
+    { title: 'Source', field: 'link', formatter: 'html', width: 100, widthGrow: 1 },
+    { title: 'Time Loaded', field: 'doneAtString', widthGrow: 1 } // see http://tabulator.info/docs/4.1/format#format-builtin datetime maybe, but it needs moment
     // { title: 'Speed', field: 'loadDuration' } hide this until the gdoc2respec refactor fixes its time
   ]
   const id = 'sources-table'
-  const sourceView = sources.map(({ url, urlAsLink, doneAtString, loadDuration }) =>
-    ({ url, urlAsLink, doneAtString, loadDuration }))
+  const sourceView = sources.map(({ url, link, urlAsLink, doneAtString, loadDuration }) =>
+    ({ url, link, urlAsLink, doneAtString, loadDuration }))
   debug('sourceView %j', sourceView)
   out.push(`
 <div id="${id}"></div>
@@ -135,6 +160,7 @@ function sourcesTable (sources) {
 new Tabulator("#${id}", {
     ${sources.length > 8 ? 'height: "12em",' : ''}
     paginationSize: 5,
+    layout: "fitColumns",
     data: ${H.safe(JSON.stringify(sourceView, null, 2))},
     columns: ${JSON.stringify(columns, null, 2)}
 });

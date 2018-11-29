@@ -84,17 +84,21 @@ class Section {
     console.error('Merging', source.name, 'into', this.name)
     // Object.assign(this, source) would get lists wrong
     this.aliases.push(source.name)
-    this.aliases.push(...source.aliases)
+    if (source.aliases) this.aliases.push(...source.aliases)
     const aliases = new Set(this.aliases) // remove dups
     aliases.delete(this.name) // and cross-references
     this.aliases = [...aliases]
     debug('MERGED aliases:', this.aliases)
 
     if (!this.defs) this.defs = []
-    this.defs.push(...source.defs || []) // annotate different source?
+    if (source.defs) {
+      this.defs.push(...source.defs || [])
+    }
 
     if (!this.parts) this.parts = []
-    this.parts.push(...source.parts || []) // annotate different source?
+    if (source.parts) {
+      this.parts.push(...source.parts || [])
+    }
 
     const pick = (prop) => {
       if (this[prop]) {

@@ -1,0 +1,6 @@
+Source Label,URL,Use,Notes
+Root,https://docs.google.com/document/d/16xLtANKeVp6FVi_zU8JaCLiHImR_kq1K2B2ebwMP2k0/edit#,yes,Main spec text
+Root-x1,https://docs.google.com/document/d/1bUwABzWgzKAbKSwCFkaOGC_xB5364sZg8xACwNABVQ0/edit,no,Experminal alternative version of original signals template document
+CSVDemo,https://docs.google.com/spreadsheets/d/1AXy5XwU6PuyCjCwFVleuYHUoUV3_d48GPreJ0aPMbyA,yes,Demo of use of spreadsheet of signal defintions
+Zhang18,https://data.credweb.org/static/zhang18,try,"Data from Zhang18, the CredCo WebConf 2018 study, including schema, instance data, and statistical data"
+Hawke,https://docs.google.com/spreadsheets/d/1wpjFq4gwa1wkBSkVpu-fQjEdeIQYbYrK6E2yToSDjcs/edit#gid=0,try,Thoughts from Sandro

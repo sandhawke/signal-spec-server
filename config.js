@@ -7,7 +7,7 @@ const config = {
   useFile: process.env.USEFILE, // 'cached.html',
   gdocID: process.env.GDOCID || '16xLtANKeVp6FVi_zU8JaCLiHImR_kq1K2B2ebwMP2k0',
   // gdocID: process.env.GDOCID || '1IzC6HrYaO3XNHAtXHsviZLEumhJDPl_S1--w_IYa68s', */
-  sourceList: 'https://docs.google.com/spreadsheets/d/1MZxj6X-U1hAck9yXwkTFFhDiHZlUI0zK4wo5Fc3CZTg',
+  sourceList: 'https://docs.google.com/spreadsheets/d/1ixAFSHnnhA7JI12yKsPiELd16pdonRABherOzZzOd1o/edit#gid=0',
   respec: {
     noRecTrack: true,
     edDraftURI: 'https://credweb.org/signals',

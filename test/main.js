@@ -25,11 +25,16 @@ test('full', async t => {
     curl -o sheet-2pac.csv 'https://docs.google.com:443/spreadsheets/d/e/2PACX-1vTIzdqEXc2XmYgjqbzHuklxRbqxFXfjuxazSdMZhkFIAJ1GhO1BU3g4ALoOe6HO_riVcDpT8hEhvU5w/pub?output=csv'
     curl -o gdoc.html 'https://docs.google.com:443/document/export?id=16xLtANKeVp6FVi_zU8JaCLiHImR_kq1K2B2ebwMP2k0&format=html'
     curl -o 1AXy.csv 'https://docs.google.com/spreadsheets/export?format=csv&id=1AXy5XwU6PuyCjCwFVleuYHUoUV3_d48GPreJ0aPMbyA'
+
+    curl -o 1ixA.csv 'https://docs.google.com/spreadsheets/export?format=csv&id=1ixAFSHnnhA7JI12yKsPiELd16pdonRABherOzZzOd1o'
+    curl -o 1wpj.csv 'https://docs.google.com/spreadsheets/export?format=csv&id=1wpjFq4gwa1wkBSkVpu-fQjEdeIQYbYrK6E2yToSDjcs'
   */
 
   nock('https://docs.google.com:443')
-    .get('/spreadsheets/export?format=csv&id=1MZxj6X-U1hAck9yXwkTFFhDiHZlUI0zK4wo5Fc3CZTg')
-    .replyWithFile(200, file('replies', 'sheet-1MZx.csv'), { 'Content-Type': 'text/csv' })
+    .get('/spreadsheets/export?format=csv&id=1ixAFSHnnhA7JI12yKsPiELd16pdonRABherOzZzOd1o')
+    .replyWithFile(200, file('replies', '1ixA.csv'), { 'Content-Type': 'text/csv' })
+    .get('/spreadsheets/export?format=csv&id=1wpjFq4gwa1wkBSkVpu-fQjEdeIQYbYrK6E2yToSDjcs')
+    .replyWithFile(200, file('replies', '1wpj.csv'), { 'Content-Type': 'text/csv' })
 
   nock('https://docs.google.com:443')
     .get('/spreadsheets/export?format=csv&id=1AXy5XwU6PuyCjCwFVleuYHUoUV3_d48GPreJ0aPMbyA')

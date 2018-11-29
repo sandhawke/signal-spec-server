@@ -9,9 +9,12 @@ class Source {
     Object.assign(this, state)
   }
 
+  get link () {
+    return '' + H`<a href="${this.url}">${this.title}</a>`
+  }
+
   get urlAsLink () {
     return '' + H`<a href="${this.url}">${this.url}`
-    // return this.url
   }
 
   get doneAtString () {
@@ -30,7 +33,7 @@ class Source {
   }
 
   get title () {
-    return this.url // for now?
+    return this.label || this.url.slice(-15)
   }
 
   async innerLoad (...args) {
@@ -83,11 +86,13 @@ class GoogleSheetSource extends Source {
       columns: false // means we go by position instead of column name
     })
     console.log('Got records %j', records)
-    if (records[0][0] === 'Source URL') {
+    if (records[0][0] === 'Source Label') {
       for (const r of records.slice(1)) {
-        if (r[1].match(/yes|try/i)) {
-          const s = addSource(config, r[0])
-          s.note = r[2]
+        if (r[2].match(/yes|try/i)) {
+          const s = addSource(config, r[1])
+          s.label = r[0]
+          s.note = r[3]
+          s.required = !!r[2].match(/yes/i)
           debug('added source', s)
         } else {
           debug('skipping source, flaged as Use=No', r[0])
@@ -97,8 +102,12 @@ class GoogleSheetSource extends Source {
       for (const r of records.slice(1)) {
         const name = r[0]
         const source = url
-        const by = H`<a href="${this.url}">${r[2]}</a>`
-        const defs = [ { text: r[1], by } ]
+        const tags = r[2].split(/\s*,\s*/).map(name => {
+          const link = this.link // in general, linking to a row would be nice
+          return { name, source: this, link }
+        })
+        // const by = H`${r[2]}(<a href="${this.url}">${r[2]}</a>`
+        const defs = [ { text: r[1], tags } ]
         sman.obtain({ name, defs, source })
       }
     } else {
@@ -131,6 +140,10 @@ function addSource (config, url) {
   // maybe do something with github URLs?  you name the repo, we
   // look for certain files in it, and automatically use
   // raw.githubusercontent.com ?
+  //
+  // actually, if you name the repo, lets do a clone/pull and look for
+  // any .csv, .json, .jsonld, .trig, or .ttl files!
+  // (maybe git: URI scheme works, too.)
 
   if (!source) {
     source = new Source({ url })
@@ -142,7 +155,8 @@ function addSource (config, url) {
 
 async function loadAll (config, sman) {
   if (!config.sources) config.sources = []
-  addSource(config, config.sourceList)
+  const s = addSource(config, config.sourceList)
+  s.label = 'Source List'
   let doAnotherPass = true
 
   while (doAnotherPass) {
