@@ -149,6 +149,7 @@ function parseLines (lines, mgr) {
   if (!m) err('expection section element')
 
   line = lines[++lineNumber]
+  if (!line) err('expecting a heading line')
   m = line.match(/id="(.*?)">(.*?)<\/h/)
   if (!m) err('expecting h element with id')
   const id = m[1]
@@ -233,6 +234,10 @@ function handleOp (op, arg, part) {
   }
   if (op === 'special' && arg === 'end-of-content') {
     part.isEnd = true
+    return part
+  }
+  if (op === 'special' && arg === 'other-signals') {
+    part.isOtherSignals = true
     return part
   }
   if (op === 'special' && arg === 'list-of-sources') {

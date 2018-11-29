@@ -55,7 +55,13 @@ router.get('/', async (req, res, next) => {
   // needs error handling
   // also, needs to cache result or something!  (but depends on sourceList, etc)
 
-  res.send(await gendoc(config))
+  try {
+    res.send(await gendoc(config))
+  } catch (e) {
+    // should look at types of errors, some of which are reportable!
+    console.error('Got gendoc error', e)
+    res.status(500).send('<p>Internal server error, sorry.  Please try again later.  If you just changed an input document, try reverting your change.</p>')
+  }
 })
 
 module.exports = router

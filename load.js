@@ -85,7 +85,7 @@ class GoogleSheetSource extends Source {
     const records = csvparse(response.body, {
       columns: false // means we go by position instead of column name
     })
-    console.log('Got records %j', records)
+    // console.log('Got records %j', records)
     if (records[0][0] === 'Source Label') {
       for (const r of records.slice(1)) {
         if (r[2].match(/yes|try/i)) {

@@ -68,6 +68,8 @@ async function gendoc (config) {
       } else if (part.isDefs) {
         out.push(...defsTable(s))
         defsDone = true
+      } else if (part.isOtherSignals) {
+        out.push(...otherSignals(sman))
       } else {
         if (!part.text) throw Error('part with no text: ' + JSON.stringify(part))
         out.push(part.text)
@@ -89,8 +91,10 @@ async function gendoc (config) {
 
 // let refseq=1000
 
+// s is a Section, as per section.js, managed by sman
 function defsTable (s) {
   // use s.defs {key, text, by} from section.parseTable() and other places
+  s.printed = true
   const out = []
   if (s.defs && s.defs.length) {
     out.push('<table>')
@@ -104,17 +108,17 @@ function defsTable (s) {
     out.push('  <tbody>')
 
     // gather the def.text and tags by name
-    let didStuff = false
+    // let didStuff = false
     const tags = {} // tags[deftext][tagname] = [src1link, src2link]
     for (const def of s.defs) {
       if (!tags[def.text]) tags[def.text] = {}
       for (const tagentry of def.tags || []) {
         if (!tags[def.text][tagentry.name]) tags[def.text][tagentry.name] = []
         tags[def.text][tagentry.name].push(tagentry.link)
-        didStuff = true
+        // didStuff = true
       }
     }
-    if (didStuff) console.log('TAGS', tags)
+    // if (didStuff) console.log('TAGS', tags)
 
     for (const text of Object.keys(tags).sort()) {
       out.push('    <tr>')
@@ -168,6 +172,24 @@ new Tabulator("#${id}", {
 
 <p>If you want to privately experiment with bookmarkable alternative views generated using a different source list, try <a href="./custom">Custom View of Credibility Signals</a>.</p>
 `)
+  return out
+}
+
+function otherSignals (sman) {
+  const out = []
+  let signals = Object.values(sman.byName)
+  signals = signals.filter(s => !s.printed && s.name)
+  // signals = signals.sort((a,b) => (
+  for (const s of signals) {
+    // really should call the main body of sectionFilter
+    //
+    // renamed sectionOut
+    //
+    out.push(H`<section>`)
+    out.push(H`  <h2>Signal: ${s.name}</h2>`)
+    out.push(...defsTable(s))
+    out.push(H`</section>`)
+  }
   return out
 }
 
