@@ -55,7 +55,9 @@ async function gendoc (config) {
     const edurl = `https://docs.google.com/document/d/${config.gdocID}/edit#heading=${s.id}`
     // ISSUE: pencil glyph is fairly rare, often renders as unknown-unicode
     // out.push('<div><a class="edit" href="' + edurl + '">🖉</a></div>')
-    out.push('<div><a class="edit" href="' + edurl + '"><img src="/static/noun_External%20Link_121701" width="20" height="20" alt="src"></a></div>')
+    
+    // yes, I paid the $1.99 for no-credit usage
+    out.push('<div><a class="edit" href="' + edurl + '"><img src="/static/noun_External%20Link_1107417g_16x16" width="16" height="16" alt="src"></a></div>')
 
     let defsDone = false
     for (const part of s.parts) {
