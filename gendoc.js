@@ -14,7 +14,7 @@ async function gendoc (config) {
   await loadAll(config, sman)
   config.sectionFilter = sectionFilter
   const text = await convert(config)
-  await fs.writeFile('out-signals.json', sman.toString(), 'utf8')
+  await fs.writeFile('.out-signals.json', sman.toString(), 'utf8')
   return text
 
   function sectionFilter (lines) {
@@ -54,7 +54,8 @@ async function gendoc (config) {
     // what if we have multple source docs, eg for subsection inclusion?
     const edurl = `https://docs.google.com/document/d/${config.gdocID}/edit#heading=${s.id}`
     // ISSUE: pencil glyph is fairly rare, often renders as unknown-unicode
-    out.push('<div><a class="edit" href="' + edurl + '">🖉</a></div>')
+    // out.push('<div><a class="edit" href="' + edurl + '">🖉</a></div>')
+    out.push('<div><a class="edit" href="' + edurl + '"><img src="/static/noun_External%20Link_121701" width="20" height="20" alt="src"></a></div>')
 
     let defsDone = false
     for (const part of s.parts) {
@@ -136,6 +137,8 @@ new Tabulator("#${id}", {
     columns: ${JSON.stringify(columns, null, 2)}
 });
 </script>
+
+<p>If you want to privately experiment with bookmarkable alternative views generated using a different source list, try <a href="./custom">Custom View of Credibility Signals</a>.</p>
 `)
   return out
 

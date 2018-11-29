@@ -6,3 +6,4 @@ out-*
 .nyc*
 out*
 test/out/
+.out-*

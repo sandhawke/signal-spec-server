@@ -7,6 +7,14 @@ const configFromFile = require('./config')
 
 const router = express.Router()
 
+router.use('/static', express.static('static', {
+  extensions: ['html', 'png', 'trig', 'nq', 'ttl', 'json', 'jsonld'],
+  setHeaders: function (res, path, stat) {
+    if (path.endsWith('.trig')) res.set('Content-Type', 'application/trig')
+  }
+}))
+
+
 router.get('/custom', async (req, res, next) => {
   res.send('' + H`<html><head></head></body>
 
