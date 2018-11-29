@@ -1,6 +1,6 @@
 {
   "name": "signal-spec-server",
-  "version": "3.0.1",
+  "version": "3.0.2",
   "description": "Web server providing dynamic view of Credibility Signals spec",
   "main": "index.js",
   "bin": {
