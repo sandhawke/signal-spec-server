@@ -3,6 +3,7 @@ const convert = require('gdoc2respec')
 const studiesTable = require('./studies')
 const datasets = require('./datasets')
 const fs = require('fs').promises
+const pkey = require('./pkey')
 const debug = require('debug')('gendoc')
 
 const section = require('./section')
@@ -100,7 +101,7 @@ function defsTable (s) {
     out.push('<table>')
     out.push('  <thead>')
     out.push('    <tr>')
-    // out.push(H`      <th>Ref</th>`)
+    out.push(H`      <th>Ref</th>`)
     out.push(H`      <th>Definition (Template)</th>`)
     out.push(H`      <th>Tags</th>`)
     out.push('    </tr>')
@@ -122,7 +123,8 @@ function defsTable (s) {
 
     for (const text of Object.keys(tags).sort()) {
       out.push('    <tr>')
-      // out.push(H`      <td>${refseq++ /*def.key || ''*/}</td>`)
+      const k = pkey.hash16(text)
+      out.push(H`      <td id="${k}"><a href="#${k}" style="font-size: 75%">${k}<a></td>`)
       out.push(H`      <td>${text}</td>`)
       const tt = [] // same as "out", but we join with no space
       for (const tagname of Object.keys(tags[text]).sort()) {
