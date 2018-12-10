@@ -137,6 +137,17 @@ function addSource (config, url) {
     source = new GoogleSheetSource({ url, id })
   }
 
+  // Uh oh, how do we know if this is a DOC or a SHEET?   Can't tell from
+  // URL.  I guess assume it's a Sheet for now, and later implement something
+  // to tell at deref time.
+  //
+  // example from Connie: https://drive.google.com/open?id=1IxiiA6B1pNNnbpOGMsXjtlHvdmFaMV0SXl06WN533rc
+  m = url.match(/^https:\/\/drive.google.com\/open\?id=([a-zA-Z0-9_-]+)/)
+  if (m) {
+    const id = m[1]
+    source = new GoogleSheetSource({ url, id })
+  }
+
   // maybe do something with github URLs?  you name the repo, we
   // look for certain files in it, and automatically use
   // raw.githubusercontent.com ?
