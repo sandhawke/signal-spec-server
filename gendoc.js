@@ -111,12 +111,17 @@ function defsTable (s) {
     // gather the def.text and tags by name
     // let didStuff = false
     const tags = {} // tags[deftext][tagname] = [src1link, src2link]
+    const comments = {}  // comments[deftext] = [comment1, comment2, .. ]
     for (const def of s.defs) {
       if (!tags[def.text]) tags[def.text] = {}
       for (const tagentry of def.tags || []) {
         if (!tags[def.text][tagentry.name]) tags[def.text][tagentry.name] = []
         tags[def.text][tagentry.name].push(tagentry.link)
         // didStuff = true
+      }
+      if (def.comments) {
+        if (!comments[def.text]) comments[def.text] = []
+        comments[def.text].push(def.comments)
       }
     }
     // if (didStuff) console.log('TAGS', tags)
@@ -138,6 +143,14 @@ function defsTable (s) {
       }
       out.push(H`      <td>${H.safe(tt.join(''))}</td>`)
       out.push('    </tr>')
+      if (comments[text]) {
+        out.push('    <tr><td colspan="3">')
+        out.push('      <p><i>Notes (not normative):</i></p><ul>')
+        for (const comment of comments[text]) {
+          out.push(H`      <li>${H.safe(comment.link)}: ${comment.text}</li>`)
+        }
+        out.push('    </ul></td></tr>')
+      }
     }
     out.push('  <tbody>')
     out.push('</table>')

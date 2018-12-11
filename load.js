@@ -106,8 +106,13 @@ class GoogleSheetSource extends Source {
           const link = this.link // in general, linking to a row would be nice
           return { name, source: this, link }
         })
+        let comments
+        let commentText = r[3].trim()
+        if (commentText !== '') {
+          comments = { text: H`${commentText}`, link: this.link }
+        }
         // const by = H`${r[2]}(<a href="${this.url}">${r[2]}</a>`
-        const defs = [ { text: r[1], tags } ]
+        const defs = [ { text: r[1], tags, comments } ]
         sman.obtain({ name, defs, source })
       }
     } else {
