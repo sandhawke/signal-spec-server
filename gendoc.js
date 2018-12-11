@@ -111,7 +111,7 @@ function defsTable (s) {
     // gather the def.text and tags by name
     // let didStuff = false
     const tags = {} // tags[deftext][tagname] = [src1link, src2link]
-    const comments = {}  // comments[deftext] = [comment1, comment2, .. ]
+    const comments = {} // comments[deftext] = [comment1, comment2, .. ]
     for (const def of s.defs) {
       if (!tags[def.text]) tags[def.text] = {}
       for (const tagentry of def.tags || []) {
