@@ -1,4 +1,4 @@
-const { hash, c14n } = require('../pkey')
+const { hash } = require('../pkey')
 const test = require('tape')
 
 test(t => {
@@ -66,7 +66,7 @@ something else
 
 
 `
-]
+  ]
   for (const s of samples) {
     // console.log(c14n(s))
     t.equal(hash(s), '0oov3M')

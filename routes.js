@@ -3,19 +3,13 @@ const express = require('express')
 const H = require('escape-html-template-tag') // H.safe( ) if needed
 // const querystring = require('querystring')
 const gendoc = require('./gendoc')
-const configFromFile = require('./config')
+// const configFromFile = require('./config')
 
-const router = express.Router()
+function makeRouter (configFromFile) {
+  const router = express.Router()
 
-router.use('/static', express.static('static', {
-  extensions: ['html', 'png', 'trig', 'nq', 'ttl', 'json', 'jsonld'],
-  setHeaders: function (res, path, stat) {
-    if (path.endsWith('.trig')) res.set('Content-Type', 'application/trig')
-  }
-}))
-
-router.get('/custom', async (req, res, next) => {
-  res.send('' + H`<html><head></head></body>
+  router.get('/custom', async (req, res, next) => {
+    res.send('' + H`<html><head></head></body>
 
 <h2>Custom View of Credibility Signals</h2>
 <p>Use this page to set up a custom version of Credibility Signals, based on different input data.  (In the future, we may offer other customizations. You can also download <a href="https://github.com/sandhawke/signal-spec-server">the source</a> to this viewer.)<p>
@@ -37,31 +31,34 @@ Source List URL: <input size="80" type="text" name="src"></input>
 </form>
 </body></html>
 `)
-})
+  })
 
-router.get('/', async (req, res, next) => {
-  const config = Object.assign({}, configFromFile)
+  router.get('/', async (req, res, next) => {
+    const config = Object.assign({}, configFromFile)
 
-  // the siteurl probably comes from appmgr which gets it via process.env
-  if (!config.siteurl) {
-    config.siteurl = req.appmgr.siteurl
-  }
+    // the siteurl probably comes from appmgr which gets it via process.env
+    if (!config.siteurl) {
+      config.siteurl = req.appmgr.siteurl
+    }
 
-  if (req.query.src) {
-    config.sourceList = req.query.src
-    console.log('Using alternate src %j', config.sourceList)
-  }
+    if (req.query.src) {
+      config.sourceList = req.query.src
+      console.log('Using alternate src %j', config.sourceList)
+    }
 
-  // needs error handling
-  // also, needs to cache result or something!  (but depends on sourceList, etc)
+    // needs error handling
+    // also, needs to cache result or something!  (but depends on sourceList, etc)
 
-  try {
-    res.send(await gendoc(config))
-  } catch (e) {
-    // should look at types of errors, some of which are reportable!
-    console.error('Got gendoc error', e)
-    res.status(500).send('<p>Internal server error, sorry.  Please try again later.  If you just changed an input document, try reverting your change.</p>')
-  }
-})
+    try {
+      res.send(await gendoc(config))
+    } catch (e) {
+      // should look at types of errors, some of which are reportable!
+      console.error('Got gendoc error', e)
+      res.status(500).send('<p>Internal server error, sorry.  Please try again later.  If you just changed an input document, try reverting your change.</p>')
+    }
+  })
 
-module.exports = router
+  return router
+}
+
+module.exports = { makeRouter }

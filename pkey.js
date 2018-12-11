@@ -1,4 +1,4 @@
-const crypto = require('crypto');
+const crypto = require('crypto')
 
 function c14n (text) {
   text = text.normalize('NFC')
@@ -13,22 +13,22 @@ function c14n (text) {
   // use, the field names and data types they want.  So they should be
   // able to change that part.  It's not part of the semantics.
   text = text.replace(/\[.*?]/g, '[]')
-  
+
   return text
 }
 
 function hash (text) {
   text = c14n(text)
-  const hash = crypto.createHash('sha256');
+  const hash = crypto.createHash('sha256')
   hash.update(text)
-  return hash.digest('base64').slice(0,6).replace('+','-').replace('/', '_')
+  return hash.digest('base64').slice(0, 6).replace('+', '-').replace('/', '_')
 }
 
 function hash16 (text) {
   text = c14n(text)
-  const hash = crypto.createHash('sha256');
+  const hash = crypto.createHash('sha256')
   hash.update(text)
-  return hash.digest('hex').slice(0,8)
+  return hash.digest('hex').slice(0, 8)
 }
 
 // hash.update('some data to has    h');

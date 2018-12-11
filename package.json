@@ -4,8 +4,8 @@
   "description": "Web server providing dynamic view of Credibility Signals spec",
   "main": "index.js",
   "bin": {
-    "signal-spec-server": "start-server.js",
-    "signal-spec": "cmd.js"
+    "signal-spec-server": "command.js",
+    "signal-spec": "command.js"
   },
   "scripts": {
     "test": "standard && tap --cov test/[a-z]*.js"
@@ -29,6 +29,7 @@
     "gdoc2respec": "0.0.4",
     "got": "^9.3.2",
     "kgx": "0.0.3",
+    "meow": "^5.0.0",
     "morgan": "^1.9.1",
     "tabulator-tables": "^4.1.2"
   },
