@@ -41,7 +41,8 @@ const main = async () => {
     config.sourceList = cli.input[0]
   }
 
-  if (cli.flags.server) {
+  // maybe make this --port, and get the port number?
+  if (cli.flags.server !== undefined) {
     const m = new AppMgr()
     m.app.use('/', routes.makeRouter(config))
     await m.start()
