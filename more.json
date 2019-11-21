@@ -12,12 +12,10 @@
   {
     "text": "On a scale from 0 to 1, the level of overall advertising clutter as it will be experienced by a human user of this website is _.",
     "signalTitle": "Advertising Clutter",
-    "tags": [
-      {
-        "name": "This is still too arbitrary to allow for interop",
-        "link": "sandro"
-      }
-    ]
+    "comments": {
+      "text": "This is too arbitrary to allow for interop",
+      "link": "sandro"
+    }
   },
   {
     "tags": [{"name": "", "link": "sandro"}],
@@ -29,4 +27,16 @@
     "text": "This is an Architecture & Construction site. Such sites focus on renovation, architecture, urban planning, and development. These sites differ from \"Home & Garden\" sites in that they focus more on the technical aspects of building and design rather than the more superficial aspects like decor.", 
     "signalTitle": "Site Category: Architecture & Construction"
   }
+  ,
+
+
+  {
+    "signalTitle": "Unified Risk Score",
+    "text": "The Unified Risk Score represents the likelihood that the content will be harmful to a brand, platform or individual. The score takes into account outputs from Factmata's signals that indicate riskiness such as the likelihood that the content contains hate speech, sexism, racism, propaganda, toxicity and more. \n\n Expected Output: The score is from 0-1, the higher the score the more likely it is to be risky. High scores indicate that the content is very likely to be harmful and should be blocked, flagged, or otherwise treated with suspicion. Scores in the middle indicate content that is potentially harmful and should be reviewed and/or carefully consumed. Content that produces low scores can be allowed, not flagged or treated with less scrutiny.",
+    "comments": {
+      "text": "Could this be made interoperable?  Can it be defined so that anyone with the right data would compute the same score?",
+      "link": "sandro"
+    }
+  }
+  
 ]

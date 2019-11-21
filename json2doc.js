@@ -62,8 +62,9 @@ async function gendoc (config) {
               .replace(/&quot;/g, '"')
               .replace(/&apos;/g, "'")
               .replace(/&#x2019;/g, "'")
+              .replace(/&amp;/g, "&")
              )
-      signal.defs.push({text, comments:{link: 'Connie 11/12/19', text:'good starting signal to figure out how to do this standardization thing'}})
+      signal.defs.push({text, comments:{link: '<a href="https://credco.slack.com/archives/GQF2QL7U4/p1573581876001900" target="_blank">Nov 12</a> Connie', text:'good starting signal to figure out how to do this standardization thing'}})
       
       const group = obtainByTitle('Subject type: News Source')
       if (!group.subs) group.subs = []
@@ -110,7 +111,7 @@ async function gendoc (config) {
     // out.push('<div><a class="edit" href="' + edurl + '">🖉</a></div>')
 
     // yes, I paid the $1.99 for no-credit usage
-    out.push(H`<div><a class="edit" href="${edurl}"><img src="${config.siteurl}/static/noun_External%20Link_1107417g_16x16" width="16" height="16" alt="src"></a></div>`)
+    // out.push(H`<div><a class="edit" href="${edurl}"><img src="https://credweb.org/noun/noun_External%20Link_1107417g_16x16.png" width="16" height="16" alt="src"></a></div>`)
 
     out.push(...defsTable(s))    
 
@@ -150,7 +151,6 @@ function defsTable (s) {
     out.push('    <tr>')
     out.push(H`      <th>Ref</th>`)
     out.push(H`      <th>Definition</th>`)
-    out.push(H`      <th>Tags</th>`)
     out.push('    </tr>')
     out.push('  </thead>')
     out.push('  <tbody>')
@@ -190,7 +190,6 @@ function defsTable (s) {
         tt.push(links.join(','))
         tt.push(') ')
       }
-      out.push(H`      <td>${H.safe(tt.join(''))}</td>`)
       out.push('    </tr>')
       if (comments[text]) {
         out.push('    <tr><td colspan="3">')
