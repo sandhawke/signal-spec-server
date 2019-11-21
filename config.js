@@ -11,7 +11,7 @@ const config = {
   respec: {
     noRecTrack: true,
     edDraftURI: 'https://credweb.org/signals',
-    specStatus: 'ED', // need a CG ED
+    specStatus: 'UN', // need a CG ED
     prevED: 'https://credweb.org/signals-20181021',
     editors: [{
       name: 'TBD (initial version by Sandro Hawke)'
