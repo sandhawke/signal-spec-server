@@ -51,12 +51,12 @@ async function gendoc (config) {
       signal.title = signal.label
       if (!signal.defs) signal.defs = []
       console.error('BODY', rec.body)
-      let text = rec.body.join('<<LINEBREAK>>')
+      let text = rec.body.join('\n\n')
       if (rec.Methodology) {
-        text += ' <<LINEBREAK>> Methodology: ' + rec.Methodology
+        text += '\n\n Methodology: ' + rec.Methodology
       }
       if (rec.expectedOutput) {
-        text += ' <<LINEBREAK>> Expected Output: ' + rec.expectedOutput
+        text += '\n\n Expected Output: ' + rec.expectedOutput
       }
       text = (text
               .replace(/&quot;/g, '"')
@@ -149,7 +149,7 @@ function defsTable (s) {
     out.push('  <thead>')
     out.push('    <tr>')
     out.push(H`      <th>Ref</th>`)
-    out.push(H`      <th>Definition (Template)</th>`)
+    out.push(H`      <th>Definition</th>`)
     out.push(H`      <th>Tags</th>`)
     out.push('    </tr>')
     out.push('  </thead>')
@@ -179,7 +179,7 @@ function defsTable (s) {
       out.push('    <tr>')
       const k = pkey.hash16(text)
       out.push(H`      <td id="${k}"><a href="#${k}" style="font-size: 75%">${k}<a></td>`)
-      out.push(H`      <td>${text}</td>`)
+      out.push(H`      <td style="white-space: pre-line">${text}</td>`)
       const tt = [] // same as "out", but we join with no space
       for (const tagname of Object.keys(tags[text]).sort()) {
         tt.push(H`${tagname}(`)
