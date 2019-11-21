@@ -63,7 +63,7 @@ async function gendoc (config) {
               .replace(/&apos;/g, "'")
               .replace(/&#x2019;/g, "'")
              )
-      signal.defs.push({text})
+      signal.defs.push({text, comments:{link: 'Connie 11/12/19', text:'good starting signal to figure out how to do this standardization thing'}})
       
       const group = obtainByTitle('Subject type: News Source')
       if (!group.subs) group.subs = []
