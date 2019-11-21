@@ -22,19 +22,19 @@
   "homepage": "https://github.com/sandhawke/signal-spec-server#readme",
   "dependencies": {
     "appmgr": "^1.1.2",
-    "browserify": "^16.2.3",
+    "browserify": "^16.5.0",
     "cnamify": "^1.0.0",
     "csv-parse": "^4.8.2",
-    "escape-html-template-tag": "^1.1.0",
-    "express": "^4.16.4",
+    "escape-html-template-tag": "^1.2.0",
+    "express": "^4.17.1",
     "gdoc2respec": "0.0.4",
-    "got": "^9.3.2",
+    "got": "^9.6.0",
     "kgx": "0.0.3",
     "meow": "^5.0.0",
     "morgan": "^1.9.1",
-    "tabulator-tables": "^4.1.2"
+    "tabulator-tables": "^4.4.3"
   },
   "devDependencies": {
-    "nock": "^10.0.2"
+    "nock": "^10.0.6"
   }
 }
