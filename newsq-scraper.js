@@ -83,5 +83,5 @@ main()
 2. Use browser network panel "fetch as curl" to get cookies
 3. cd newsq-signals
 4. for n in `seq 0 200`; do echo $n; curl https://api.newsq.net/signals/$n/documentation -o $n.html [cookie stuff]; done
-
+5. X=`grep -l 'The page you were looking for doesn' *.html`; rm $X
 */
