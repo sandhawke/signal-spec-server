@@ -10,18 +10,6 @@
     "signalTitle": "No Visible Corrections Policy"
   },
   {
-    "tags": [{"name": "", "link": "sandro"}],
-    "text": "The text of this website's offical corrections policy is: _",
-    "signalTitle": "Text of Corrections Policy",
-    "comments": {"link":"Hello?", "text": "Yolo"}
-  },
-  {
-    "tags": [{"name": "", "link": "sandro2"}],
-    "text": "The text of this website's offical corrections policy is: _",
-    "signalTitle": "Text of Corrections Policy",
-    "comments": {"link":"Hello?", "text": "Yolo2"}
-  },
-  {
     "text": "On a scale from 0 to 1, the level of overall advertising clutter as it will be experienced by a human user of this website is _.",
     "signalTitle": "Advertising Clutter",
     "tags": [

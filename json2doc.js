@@ -3,10 +3,10 @@ const fs = require('fs').promises
 const pkey = require('./pkey')
 const debug = require('debug')('gendoc')
 
-const allDefs = require('./.out-signal-defs')
+const allDefs = [] // require('./.out-signal-defs')
 const more = require('./more')
-const newsQ = require('./newsq')
-const hier = require('./.out-hier')
+const newsQ = require('./.out-newsq')
+const hier = [] // require('./.out-hier')
 const moreh = require('./more-hier')
 const byTitle = {}
 
@@ -65,7 +65,7 @@ async function gendoc (config) {
              )
       signal.defs.push({text})
       
-      const group = obtainByTitle('Subject type: Internet Domain')
+      const group = obtainByTitle('Subject type: News Source')
       if (!group.subs) group.subs = []
       group.subs.push(signal)
       signal.hasParent = true 
@@ -272,15 +272,13 @@ function closeup(i) {
   var respecConfig = {
     "noRecTrack": true,
     "edDraftURI": "https://credweb.org/signals",
-    "specStatus": "ED",
-    "prevED": "https://credweb.org/signals-20181021",
+    "specStatus": "UN",
     "editors": [
         {
-            "name": "TBD (initial version by Sandro Hawke)"
+            "name": "Sandro Hawke"
         }
     ],
     "github": "https://github.com/w3c/credweb",
-    "shortName": "not-published-as-TR",
     "wg": "Credible Web Community Group",
     "wgURI": "https://www.w3.org/community/credibility/"
 }
@@ -288,16 +286,7 @@ function closeup(i) {
 </head>
 <body>
   <div id="abstract">This document specifies various types of information, called credibility signals, which are considered potentially useful in assessing credibility of online information.</div>
-  <div id="sotd">
-    <div id="real-sotd" style="margin: 1em; border: 4px solid blue; padding: 1em">
-    <p>This document is automatically assembled from a <strong><a href="https://docs.google.com/document/d/16xLtANKeVp6FVi_zU8JaCLiHImR_kq1K2B2ebwMP2k0">crowd-source Google doc</a></strong> and various data sources.  It may contain completely bogus content.  You may prefer the <b><a href=https://credweb.org/signals-20181021>most recent stable release</a></b></p>
-    <hr/>
-
-<p>Comments are welcome and are especially useful if they offer specific improvements which can be incorporated into future versions.  Please comment either by <a href="https://github.com/w3c/credweb/issues">raising a github issue</a> or making inline comments on the google doc (easily reached using the pencil 🖉 link in the right margin).  If neither of those options work for you, please email your comments to <a href="mailto:public-credibility-comments@w3.org">public-credibility-comments@w3.org</a> (<a href="https://lists.w3.org/Archives/Public/public-credibility-comments/">archive</a>, <a href="mailto:public-credibility-comments-request@w3.org?subject=subscribe">subscribe</a>).
-</p>
-
-    </div>
-</div>
+  <div id="sotd"><b>@@ In Progress - Not Fully Published</b></div>
 <section><h1 id="intro">Introduction</h1>
 <p>TBD.</p>
 </section>
