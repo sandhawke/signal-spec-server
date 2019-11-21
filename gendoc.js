@@ -9,6 +9,11 @@ const debug = require('debug')('gendoc')
 const section = require('./section')
 const { loadAll } = require('./load')
 
+const allDefs = []
+const path = []
+const roots = []
+const hier = []
+
 async function gendoc (config) {
   if (!config) throw Error('gendoc missing config')
   const sman = new section.Manager(config)
@@ -16,6 +21,9 @@ async function gendoc (config) {
   config.sectionFilter = sectionFilter
   const text = await convert(config)
   await fs.writeFile('.out-signals.json', sman.toString(), 'utf8')
+  await fs.writeFile('.out-signal-defs.json', JSON.stringify(allDefs, null, 2), 'utf8')
+  await fs.writeFile('.out-roots.json', JSON.stringify(roots, null, 2), 'utf8')
+  await fs.writeFile('.out-hier.json', JSON.stringify(hier, null, 2), 'utf8')
   return text
 
   function sectionFilter (lines) {
@@ -49,6 +57,16 @@ async function gendoc (config) {
     if (!s.title) throw Error('no title WTF ' + JSON.stringify(s))
     out.push(`<h${s.hLevel} id="${s.id}">${spans.join('')}${s.title}</h${s.hLevel}>`)
     out.push('')
+    path.splice(s.hLevel - 1, 999, s)
+    const parent = path[s.hLevel - 2]
+    if (parent) {
+      if (!parent.subs) parent.subs = []
+      parent.subs.push(s)
+      hier.push({itemTitle: s.title, groupTitle: parent.title})
+    } else {
+      roots.push(s)
+    }
+    console.log('SECTION', s.hLevel, s.title, path.map(s => s.title))
 
     // make a link to our relevant source doc
     //
@@ -113,6 +131,8 @@ function defsTable (s) {
     const tags = {} // tags[deftext][tagname] = [src1link, src2link]
     const comments = {} // comments[deftext] = [comment1, comment2, .. ]
     for (const def of s.defs) {
+      def.signalTitle = s.title
+      allDefs.push(def)
       if (!tags[def.text]) tags[def.text] = {}
       for (const tagentry of def.tags || []) {
         if (!tags[def.text][tagentry.name]) tags[def.text][tagentry.name] = []
