@@ -18,6 +18,14 @@
     }
   },
   {
+    "text": "On a scale from 0 to 1, what fraction of the screen space on an average user's screen is used by adverting.",
+    "signalTitle": "Advertising Clutter",
+    "comments": {
+      "text": "This is maybe objective",
+      "link": "sandro"
+    }
+  },
+  {
     "tags": [{"name": "", "link": "sandro"}],
     "text": "This is an Anime Site, primarily hosting anime or manga or include links to stream such content.",
     "signalTitle": "Site Category: Anime"
