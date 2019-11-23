@@ -193,6 +193,20 @@ function defsTable (s) {
       out.push('    </tr>')
       if (comments[text]) {
         out.push('    <tr><td colspan="3">')
+
+        if (s.source) {
+          out.push(`<p><i>Source:</i> ${s.source}`)
+          if (s.index && s.id) {
+            out.push(` via <a href="https://api.newsq.net/signals/${s.index}/documentation">NewsQ (${s.id}</a>)`)
+          }
+           out.push(`</p>`)
+        }
+
+        if (s.demoOnly) {
+          out.push(`<p><i>For Demonstration Purposes Only</i>.`)
+          out.push(`</p>`)
+        }
+        
         out.push('      <p><i>Notes (not normative):</i></p><ul>')
         for (const comment of comments[text]) {
           out.push(H`      <li>${H.safe(comment.link)}: ${comment.text}</li>`)
