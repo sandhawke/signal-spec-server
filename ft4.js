@@ -12,7 +12,8 @@ const defs = []   // { description, label, comment, commentSource, source, ... }
 // const hier = [] // require('./.out-hier')
 // const moreh = require('./more-hier')
 
-const defaultSection = 'Subject type: News Source'
+const defaultSection = 'Signal Definitions'
+const s2 = 'Signal Qualities'
 const sections = [
   /*
   { title: 'Unified Risk Score',
@@ -21,7 +22,23 @@ const sections = [
   { title: 'Group1', parent: 'Group2' },
   { title: 'Other', parent: 'Group2' },
   */
-  { title: defaultSection }
+  { title: 'Introduction' },
+  { title: s2 },
+  { title: defaultSection },
+
+  // These should get filled in with the labels/defs that are tagged as having
+  // these qualitied, according to sources.  Sources like [NewsQ 2019] or
+  // [Credible Web CG 2019-11-03]  --- link to meeting minutes.
+  //    RESOLVED: fooo    is a tag issued by the meeting.
+  
+  { title: 'Easy to understand', parent: s2 },
+  { title: 'Easy to for humans to measure', parent: s2 },
+  { title: 'Easy to for machines to measure', parent: s2 },
+  { title: 'Readily Available', parent: s2 },
+  { title: 'Hard to Game', parent: s2 },
+  { title: 'Interoperable', parent: s2 },
+  { title: 'Promising', parent: s2 },
+  { title: 'Validated', parent: s2 },
 ]
 const defsDone = new Set()
 
@@ -84,11 +101,8 @@ async function gendoc (config) {
     const defLines = defsTable(s)
     if (defLines.length === 0 && s.title === 'Misc') return []
 
-    // set id
+    // improve this, please
     s.id = 'sec' + (++idCount)
-
-    // TOC is like:
-    // <li class="tocline"><a class="tocxref" href="#subject-type-news-source"><bdi class="secno">2. </bdi>Subject type: News Source</a>
 
     if (s.hLevel > prevLevel) {
       toc.push('<ol class="toc"><li class="tocline">')
