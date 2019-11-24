@@ -14,16 +14,39 @@ const sections = [
     parent: 'Group1'
   },
   { title: 'Group1', parent: 'Group2' },
+  { title: 'Other', parent: 'Group2' },
   { title: 'Group2' }
 ]
+const defsDone = new Set()
+
+function sectionForDef (def) {
+  for (const section of sections) {
+    if (def.label === section.title) return section
+  }
+  return undefined
+}
 
 async function gendoc (config) {
-  const out = []
   if (!config) throw Error('gendoc missing config')
+  const out = []
+
+  for (const def of defs) {
+    if (!sectionForDef(def)) {
+      sections.push( {title: def.label || 'Misc', parent: 'Other' } )
+    }
+  }
   
   for (const item of sections) {
     if (item.parent === undefined) out.push(...section(item, [item]))
   }
+
+  for (const def of defs) {
+    if (defsDone.has(def.description)) continue
+    console.error('\n\n\ndidnt do', def)
+  }
+
+  console.error({sections})
+
   
   return out.map(x => x.toString()).join('')
   
@@ -102,6 +125,7 @@ function defsTable (s) {
     // if (didStuff) console.error('TAGS', tags)
     */
   for (const defText of defTexts.values()) {
+    defsDone.add(defText)
     out.push('    <tr>')
     const k = pkey.hash16(defText)
     out.push(H`      <td id="${k}"><a href="#${k}" style="font-size: 75%">${k}<a></td>`)
