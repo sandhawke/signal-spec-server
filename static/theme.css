@@ -1,0 +1,152 @@
+
+body { 
+  font-family: Arial; 
+}
+
+/*
+https://css-tricks.com/snippets/css/complete-guide-grid/
+*/
+#page {
+    display: grid;
+    grid-template-columns: repeat(4, 200px)
+    grid-template-rows: auto;
+    grid-template-areas: 
+        "header header header header"
+        "main main main main"
+        "footer footer footer footer";
+    grid-column-gap: 10px;
+    grid-row-gap: 15px;
+    justify-items: center; /* stretch ? */
+}
+
+#page>* {
+    grid-area: main;
+}
+
+footer {
+    grid-area: footer !important;;
+}
+
+.nav {
+    grid-area: header !important;
+    width: 100%;
+    visibility: visible !important;
+    display: flex;
+    // flex-wrap: wrap;
+}
+
+.nav>* {
+    flex: 2;
+}
+
+.nav>*.hover {
+    background-color: blue;
+}
+
+.nav-home {
+    flex: 1;
+    max-width: 8rem;
+    text-align: left;
+}
+.nav .user-settings {
+    flex: 0;
+    text-align: right;
+    margin-right: 1rem;
+}
+.nav .all-settings {
+    flex: 0;
+    text-align: right;
+    margin-right: 1rem;
+}
+
+/*
+#page>div {
+    visibility: collapse;
+}
+*/
+
+.active {
+    visibility: visible;
+}
+.inactive {
+    visibility: collapse;
+}
+
+
+.welcome-choices {
+    display: flex;
+}
+.welcome-choices>* {
+    background-color: #DDD;
+    flex: 1;
+}
+
+@media all and (max-width: 750px) {
+    .welcome-choices {
+        flex-direction: column;
+    }
+    .welcome-choices>* {
+        margin: 0em;
+        padding: 1rem;
+        border: 0.3rem solid white;
+    }
+}
+@media not all and (max-width: 750px) {
+    .welcome-choices {
+        flex-direction: row;
+        flex-wrap: wrap;
+    }
+    .welcome-choices>* {
+        margin: 1em;
+        padding: 2rem;
+    }
+}
+
+
+h1 {
+    text-align: center;
+}
+
+.advice {
+    margin: 1em;
+    background-color: #DDD;
+    padding: 2rem;
+}
+
+.settings-panel {
+    background: rgb(200,200,200);
+    border: 3px solid white;
+    padding: 1rem;
+    width: 80%;
+    height: 90%;
+}
+
+/* no idea why this messes things up, creating horiz scrollbar
+@media (max-width: 750px) {
+    .settings-panel {
+        width: 100%;
+        height: 100%;
+    }
+}
+*/
+.close {
+    float: right;
+    vertical-align: top;
+    text-decoration: inherit;
+    padding: 5px;
+    font-size: 200%;
+    text-shadow: 0px 0px 4px white;
+}
+
+.about {
+    background: rgb(200,200,200);
+    border: 3px solid white;
+    padding: 3rem;
+    width: 80%;
+    height: 90%;
+}
+
+.email-link {
+    color: inherit;
+}
+
