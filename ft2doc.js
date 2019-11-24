@@ -336,15 +336,26 @@ const suffix = `
 </body></html>`
 
 const schema = [
+  `Item _key has the name or title _label`,
+  `Within the NewsQ V1 API, item _key has field identifier _id`,
+  `One expected source for the item _key is _source`,
+  `Within the NewsQ V1 API, item _key has the signal reference number _index`,
+  `Item _key is gathered with a methodology described like this: _methodology`,
+  `Item _key has the description text _text`
+]
+
+/*
+const schema = [
   `For the signal described as _text a suitable label or name or title is _label`,
   `For the signal described as _text the NewsQ field identifier is _id`,
   `For the signal described as _text one expected source is _source`,
   `For the signal described as _text the NewsQ signal reference number is _index`,
   `For the signal described as _text the methodology for measuring the signal is _methodology`
 ]
+*/
 
 const main = async () => {
-  const newsqText = await fs.readFile('newsq.ft', 'utf8')
+  const newsqText = await fs.readFile('newsq2.ft', 'utf8')
   newsQ.push(...glue(newsqText, schema))
   // console.log({newsQ})
   const html = await gendoc(config)
