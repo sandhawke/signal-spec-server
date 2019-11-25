@@ -2,6 +2,9 @@ const H = require('escape-html-template-tag')
 const emerj = require('emerj')
 const nav = require('/home/sandro/Repos/nav-spa')
 const debug = require('debug')('signal-spec')
+const {gendoc,schema} = require('../ft5')
+const {glue} = require('../glue')
+const {parse} = require('/home/sandro/Repos/flextag-parser')
 
 const $ = (selector, elem) => {
   if (elem === undefined) elem = document
@@ -29,17 +32,32 @@ async function run () {
   db.on('unknownchange', proc)
   db.addSourceURL('https://docs.google.com/document/d/1WZU65fEDNWkeTIoh93clyQP-ERhj_yJoFBQcKrSiEJ0/edit')
 
-  // on statements / on timer? / on data change
-  //
-  // call gendoc
-  //
-  // and emerge the result.
-
   function proc () {
-    console.log('%o statements', [...db.allStatements()].length)
-    const count = [...db.allStatements()].length
+    const stmts = [...db.allStatements()]
+    console.log('%o statements', stmts.length)
+    const count = stmts.length
     const html = `<p>Sources providing ${count} statements</p>`
-    emerj.merge($('#app'), html)
+    // emerj.merge($('#alert'), html)
+
+    // BUG: glue separately please
+
+    console.log({stmts})
+    window.s = stmts
+    window.parse = parse
+    window.glue = glue
+    const sText = stmts.map(x => x.text).join('\n\n')
+    console.log({sText})
+    const defs = glue(sText, schema)
+    console.log({defs})
+    if (defs.length) {
+      const {toc, sections} = gendoc(defs)
+      console.log( {toc, sections} )
+      emerj.merge($('#toc-ol'), toc)
+      emerj.merge($('#main'), sections)
+    } else {
+      console.log('no input defs?')
+      emerj.merge($('#main'), '')
+    }
   }
 }
 
