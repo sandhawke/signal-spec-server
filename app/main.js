@@ -30,28 +30,38 @@ async function run () {
   const db = window.tagdb
   // db.on('change', event => { console.log('db change', event) })
   db.on('unknownchange', proc)
-  db.addSourceURL('https://docs.google.com/document/d/1WZU65fEDNWkeTIoh93clyQP-ERhj_yJoFBQcKrSiEJ0/edit')
 
+  const sources = {
+    'https://docs.google.com/document/d/1WZU65fEDNWkeTIoh93clyQP-ERhj_yJoFBQcKrSiEJ0/edit': 'NewsQ',
+    'https://docs.google.com/document/d/1p6c4TvsbXOVtb0DHztXDdqgRk8P0n65K0TMGkv7jIjo/edit': 'Sandro'
+  }
+  for (const url of Object.keys(sources)) db.addSourceURL(url)
+  
   function proc () {
-    const stmts = [...db.allStatements()]
-    console.log('%o statements', stmts.length)
-    const count = stmts.length
-    const html = `<p>Sources providing ${count} statements</p>`
-    // emerj.merge($('#alert'), html)
+    const allDefs = []
+    for (const src of db.sources) {
+      // console.log('LINE', src.url)
+      const out = []
+      for (const stmt of src.statements) {
+        out.push(stmt.text)
+      }
+      const all = out.join('\n\n')
+      // console.log({url: src.url, all})
 
-    // BUG: glue separately please
+      const defs = glue(all, schema)
+      for (const def of defs) {
+        def.sourceURL = src.url
+        def.sourceName = sources[src.url]
+        def.sourceLink = H`<a href="${def.sourceURL}" target="_blank">${def.sourceName}</a>`
+        allDefs.push(def)
+      }
+      // console.log('GLUED', {all, defs})
+    }
+    console.log({allDefs})
 
-    console.log({stmts})
-    window.s = stmts
-    window.parse = parse
-    window.glue = glue
-    const sText = stmts.map(x => x.text).join('\n\n')
-    console.log({sText})
-    const defs = glue(sText, schema)
-    console.log({defs})
-    if (defs.length) {
-      const {toc, sections} = gendoc(defs)
-      console.log( {toc, sections} )
+    if (allDefs.length) {
+      const {toc, sections} = gendoc(allDefs)
+      // console.log( {toc, sections} )
       emerj.merge($('#toc-ol'), toc)
       emerj.merge($('#main'), sections)
     } else {
