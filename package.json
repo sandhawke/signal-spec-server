@@ -28,7 +28,7 @@
     "escape-html-template-tag": "^1.2.0",
     "express": "^4.17.1",
     "gdoc2respec": "0.0.4",
-    "got": "^9.6.0",
+    "got": "^11.8.5",
     "kgx": "0.0.3",
     "meow": "^5.0.0",
     "morgan": "^1.9.1",
